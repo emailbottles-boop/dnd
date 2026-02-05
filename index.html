@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inkarnate & Owlbear Rodeo Hub</title>
+    <title>Mystic Tabletop - Virtual TTRPG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,523 +14,1625 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #1f2937;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #ec4899;
+            --accent-gold: #fbbf24;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --border-subtle: rgba(139, 92, 246, 0.1);
+            --border-focus: rgba(139, 92, 246, 0.3);
+            --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.15);
+            --shadow-deep: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            min-height: 100vh;
+            font-family: 'Raleway', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
         }
 
-        .header {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        /* Refined Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
+        /* Navigation */
+        .nav-bar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            box-shadow: var(--shadow-deep);
+            position: relative;
+            z-index: 100;
         }
 
-        .header p {
-            opacity: 0.9;
-            font-size: 0.95em;
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .container {
+        .nav-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+            overflow-x: auto;
+            padding: 0.25rem 0;
+        }
+
+        .tab-container::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .tab-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .tab-container::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 2px;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: var(--bg-primary);
+            border-color: var(--border-focus);
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .tab-close {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .tab-close:hover {
+            background: var(--accent-secondary);
+            color: white;
+        }
+
+        .add-tab-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px dashed var(--border-focus);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .add-tab-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .dm-btn {
+            padding: 0.5rem 1.25rem;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        /* Player View */
+        .player-view {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1800px;
-            margin: 0 auto;
+            padding: 1rem;
         }
 
-        .tool-section {
-            background: rgba(255, 255, 255, 0.1);
+        .tabletop-wrapper {
+            flex: 1;
+            background: var(--bg-secondary);
             border-radius: 12px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            box-shadow: var(--shadow-deep);
+            display: flex;
+            flex-direction: column;
         }
 
-        .tool-header {
+        .tabletop-controls {
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
-        .tool-header h2 {
-            font-size: 1.5em;
+        .control-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
         }
 
-        .tool-controls {
+        .control-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 120px;
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            width: 16px;
+            height: 16px;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        .canvas-area {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(22, 27, 34, 0.8) 0%, rgba(13, 17, 23, 0.95) 100%);
+        }
+
+        #tabletopCanvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #tabletopCanvas:active {
+            cursor: grabbing;
+        }
+
+        /* DM Panel */
+        .dm-panel {
+            width: 420px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-subtle);
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dm-panel.open {
+            transform: translateX(0);
+        }
+
+        .dm-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-tertiary);
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-subtle);
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(10px);
         }
 
-        .btn {
-            padding: 10px 20px;
-            border: none;
+        .dm-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+            color: white;
+        }
+
+        .dm-content {
+            padding: 1.25rem;
+        }
+
+        .section {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Tool Grid */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-card {
+            aspect-ratio: 1;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .tool-card:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .tool-card.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .tool-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Asset Picker */
+        .asset-picker {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin: 0.75rem 0;
+        }
+
+        .asset-btn {
+            aspect-ratio: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            font-size: 1.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .asset-btn:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-primary);
+            transform: scale(1.1);
+        }
+
+        .asset-btn.active {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Canvas */
+        #mapCanvas {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            background: white;
+            cursor: crosshair;
+        }
+
+        /* Controls */
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0.75rem 0;
+        }
+
+        .control-row label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            min-width: 80px;
+            font-weight: 500;
+        }
+
+        .control-row input[type="color"] {
+            width: 50px;
+            height: 36px;
+            border: 1px solid var(--border-subtle);
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
+            background: transparent;
+        }
+
+        .control-row .slider {
+            flex: 1;
+        }
+
+        .control-row span {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.65rem 1.25rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
         }
 
         .btn-primary {
-            background: #4CAF50;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border: none;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #45a049;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
         }
 
-        .btn-secondary {
-            background: #2196F3;
+        .btn-success {
+            background: #10b981;
+            border: none;
             color: white;
         }
 
-        .btn-secondary:hover {
-            background: #0b7dda;
+        .btn-success:hover {
+            background: #059669;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-warning {
-            background: #ff9800;
+        .btn-danger {
+            background: #ef4444;
+            border: none;
             color: white;
         }
 
-        .btn-warning:hover {
-            background: #e68900;
+        .btn-danger:hover {
+            background: #dc2626;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .window-placeholder {
-            width: 100%;
-            min-height: 200px;
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid var(--border-focus);
             border-radius: 8px;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Checkbox */
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .checkbox-row:hover {
+            background: var(--bg-primary);
+            border-color: var(--border-focus);
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Login Modal */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            gap: 15px;
-            padding: 40px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .login-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .login-modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-focus);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-deep), var(--shadow-glow);
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+
+        .login-overlay.active .login-modal {
+            transform: scale(1);
+        }
+
+        .login-header {
             text-align: center;
-            border: 2px dashed rgba(255, 255, 255, 0.3);
+            margin-bottom: 2rem;
         }
 
-        .window-placeholder h3 {
-            font-size: 1.2em;
-            opacity: 0.9;
+        .login-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .window-placeholder p {
-            opacity: 0.7;
-            max-width: 500px;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        .window-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin-top: 10px;
+        .login-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
         }
 
-        .window-status.open {
-            background: rgba(76, 175, 80, 0.3);
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
-        .window-status.closed {
-            background: rgba(244, 67, 54, 0.3);
+        .form-group {
+            margin-bottom: 1.25rem;
         }
 
-        .transfer-section {
-            background: rgba(76, 175, 80, 0.15);
-            border: 2px dashed rgba(76, 175, 80, 0.5);
-            border-radius: 12px;
-            padding: 25px;
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.875rem;
             text-align: center;
-        }
-
-        .transfer-section h3 {
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .transfer-instructions {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: left;
-        }
-
-        .transfer-instructions ol {
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-
-        .transfer-instructions li {
-            margin: 8px 0;
-        }
-
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .quick-link-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .quick-link-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .quick-link-card h4 {
-            margin-bottom: 8px;
-            color: #4CAF50;
-        }
-
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #4CAF50;
-            margin-right: 8px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .file-upload {
-            margin-top: 15px;
-        }
-
-        .file-upload input[type="file"] {
             display: none;
         }
 
-        .file-upload label {
-            padding: 12px 24px;
-            background: #2196F3;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-block;
-            transition: all 0.3s ease;
-            font-weight: 600;
+        .error-message.show {
+            display: block;
+            animation: shake 0.4s;
         }
 
-        .file-upload label:hover {
-            background: #0b7dda;
-            transform: translateY(-2px);
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
-        #uploadStatus {
-            margin-top: 10px;
-            font-style: italic;
-            opacity: 0.9;
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
 
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.5em;
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dm-panel {
+                width: 100%;
+                position: fixed;
+                top: 60px;
+                right: 0;
+                height: calc(100vh - 60px);
+                z-index: 200;
             }
-            
-            .tool-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
 
-            .iframe-container {
-                height: 400px;
+            .nav-center {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🗺️ Inkarnate & Owlbear Rodeo Hub</h1>
-        <p>Your integrated workspace for map creation and virtual tabletop gaming</p>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="logo">
+            <span>✨</span>
+            <span>MYSTIC TABLETOP</span>
+        </div>
+
+        <div class="nav-center">
+            <div class="tab-container" id="tabContainer">
+                <!-- Tabs will be inserted here -->
+            </div>
+            <button class="add-tab-btn" onclick="createNewSession()">+ New Session</button>
+        </div>
+
+        <div class="nav-actions">
+            <button class="icon-btn" onclick="saveSession()" title="Save Session">💾</button>
+            <button class="icon-btn" onclick="loadSession()" title="Load Session">📂</button>
+            <button class="dm-btn" onclick="showLogin()">🎭 DM Controls</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Player View -->
+        <div class="player-view">
+            <div class="tabletop-wrapper">
+                <div class="tabletop-controls">
+                    <div class="control-group">
+                        <span class="control-label" id="sessionName">Untitled Session</span>
+                    </div>
+                    <div class="control-group">
+                        <span class="control-label">Zoom:</span>
+                        <input type="range" class="slider" id="zoomSlider" min="50" max="300" value="100" oninput="updateZoom(this.value)">
+                        <span id="zoomValue">100%</span>
+                    </div>
+                </div>
+                <div class="canvas-area">
+                    <canvas id="tabletopCanvas" width="1600" height="900"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- DM Panel -->
+        <div class="dm-panel" id="dmPanel">
+            <div class="dm-header">
+                <h2>🎭 Dungeon Master</h2>
+                <button class="close-btn" onclick="closeDMPanel()">×</button>
+            </div>
+
+            <div class="dm-content">
+                <!-- Map Builder -->
+                <div class="section">
+                    <div class="section-header">🗺️ Map Builder</div>
+
+                    <div class="tool-grid">
+                        <div class="tool-card active" onclick="setTool('brush')" id="brushTool">
+                            <div class="tool-icon">🖌️</div>
+                            <div>Brush</div>
+                        </div>
+                        <div class="tool-card" onclick="setTool('fill')" id="fillTool">
+                            <div class="tool-icon">🪣</div>
+                            <div>Fill</div>
+                        </div>
+                        <div class="tool-card" onclick="setTool('eraser')" id="eraserTool">
+                            <div class="tool-icon">🧹</div>
+                            <div>Erase</div>
+                        </div>
+                        <div class="tool-card" onclick="setTool('stamp')" id="stampTool">
+                            <div class="tool-icon">🏰</div>
+                            <div>Stamp</div>
+                        </div>
+                        <div class="tool-card" onclick="setTool('line')" id="lineTool">
+                            <div class="tool-icon">📏</div>
+                            <div>Line</div>
+                        </div>
+                        <div class="tool-card" onclick="setTool('rect')" id="rectTool">
+                            <div class="tool-icon">⬜</div>
+                            <div>Rect</div>
+                        </div>
+                        <div class="tool-card" onclick="setTool('circle')" id="circleTool">
+                            <div class="tool-icon">⭕</div>
+                            <div>Circle</div>
+                        </div>
+                        <div class="tool-card" onclick="setTool('text')" id="textTool">
+                            <div class="tool-icon">📝</div>
+                            <div>Text</div>
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <label>Color:</label>
+                        <input type="color" id="colorPicker" value="#4a7c59">
+                    </div>
+
+                    <div class="control-row">
+                        <label>Size:</label>
+                        <input type="range" class="slider" id="brushSize" min="1" max="100" value="15" oninput="updateBrushSize(this.value)">
+                        <span id="brushSizeValue">15px</span>
+                    </div>
+
+                    <details style="margin: 1rem 0;">
+                        <summary style="cursor: pointer; color: var(--accent-gold); font-weight: 500; margin-bottom: 0.5rem;">Assets Library (70+)</summary>
+                        <div class="asset-picker">
+                            <div class="asset-btn" onclick="selectStamp('🌲')">🌲</div>
+                            <div class="asset-btn" onclick="selectStamp('🌳')">🌳</div>
+                            <div class="asset-btn" onclick="selectStamp('🌴')">🌴</div>
+                            <div class="asset-btn" onclick="selectStamp('🍃')">🍃</div>
+                            <div class="asset-btn" onclick="selectStamp('🌿')">🌿</div>
+                            <div class="asset-btn" onclick="selectStamp('🏔️')">🏔️</div>
+                            <div class="asset-btn" onclick="selectStamp('⛰️')">⛰️</div>
+                            <div class="asset-btn" onclick="selectStamp('🗻')">🗻</div>
+                            <div class="asset-btn" onclick="selectStamp('🌊')">🌊</div>
+                            <div class="asset-btn" onclick="selectStamp('💧')">💧</div>
+                            <div class="asset-btn" onclick="selectStamp('🏰')">🏰</div>
+                            <div class="asset-btn" onclick="selectStamp('🏯')">🏯</div>
+                            <div class="asset-btn" onclick="selectStamp('🏛️')">🏛️</div>
+                            <div class="asset-btn" onclick="selectStamp('⛪')">⛪</div>
+                            <div class="asset-btn" onclick="selectStamp('🏘️')">🏘️</div>
+                            <div class="asset-btn" onclick="selectStamp('🏚️')">🏚️</div>
+                            <div class="asset-btn" onclick="selectStamp('🏠')">🏠</div>
+                            <div class="asset-btn" onclick="selectStamp('⛺')">⛺</div>
+                            <div class="asset-btn" onclick="selectStamp('🛤️')">🛤️</div>
+                            <div class="asset-btn" onclick="selectStamp('🌉')">🌉</div>
+                            <div class="asset-btn" onclick="selectStamp('🔮')">🔮</div>
+                            <div class="asset-btn" onclick="selectStamp('⚗️')">⚗️</div>
+                            <div class="asset-btn" onclick="selectStamp('📜')">📜</div>
+                            <div class="asset-btn" onclick="selectStamp('⚔️')">⚔️</div>
+                            <div class="asset-btn" onclick="selectStamp('🗡️')">🗡️</div>
+                            <div class="asset-btn" onclick="selectStamp('🛡️')">🛡️</div>
+                            <div class="asset-btn" onclick="selectStamp('🏹')">🏹</div>
+                            <div class="asset-btn" onclick="selectStamp('🪓')">🪓</div>
+                            <div class="asset-btn" onclick="selectStamp('💎')">💎</div>
+                            <div class="asset-btn" onclick="selectStamp('👑')">👑</div>
+                            <div class="asset-btn" onclick="selectStamp('🔥')">🔥</div>
+                            <div class="asset-btn" onclick="selectStamp('❄️')">❄️</div>
+                            <div class="asset-btn" onclick="selectStamp('⚡')">⚡</div>
+                            <div class="asset-btn" onclick="selectStamp('💀')">💀</div>
+                            <div class="asset-btn" onclick="selectStamp('🕯️')">🕯️</div>
+                            <div class="asset-btn" onclick="selectStamp('🐉')">🐉</div>
+                            <div class="asset-btn" onclick="selectStamp('🦅')">🦅</div>
+                            <div class="asset-btn" onclick="selectStamp('🦉')">🦉</div>
+                            <div class="asset-btn" onclick="selectStamp('🦇')">🦇</div>
+                            <div class="asset-btn" onclick="selectStamp('🐺')">🐺</div>
+                            <div class="asset-btn" onclick="selectStamp('🦁')">🦁</div>
+                            <div class="asset-btn" onclick="selectStamp('🐻')">🐻</div>
+                            <div class="asset-btn" onclick="selectStamp('🦌')">🦌</div>
+                            <div class="asset-btn" onclick="selectStamp('🍄')">🍄</div>
+                            <div class="asset-btn" onclick="selectStamp('🪨')">🪨</div>
+                        </div>
+                    </details>
+
+                    <canvas id="mapCanvas" width="1600" height="900"></canvas>
+
+                    <div class="btn-group" style="margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="loadMapToTable()">📥 Load to Table</button>
+                        <button class="btn" onclick="exportMap()">💾 Export</button>
+                        <button class="btn btn-danger" onclick="clearMap()">🗑️ Clear</button>
+                    </div>
+                </div>
+
+                <!-- Fog of War -->
+                <div class="section">
+                    <div class="section-header">🌫️ Fog of War</div>
+
+                    <div class="info-box">
+                        Enable fog mode to reveal/hide areas. Perfect for exploration!</div>
+
+                    <div class="control-row">
+                        <label>Brush:</label>
+                        <input type="range" class="slider" id="fogBrushSize" min="20" max="200" value="60" oninput="updateFogBrush(this.value)">
+                        <span id="fogBrushValue">60px</span>
+                    </div>
+
+                    <label class="checkbox-row">
+                        <input type="checkbox" id="revealMode" checked onchange="updateFogMode()">
+                        <span>Reveal Mode (uncheck to hide)</span>
+                    </label>
+
+                    <div class="btn-group" style="margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="toggleFogMode()" id="fogModeBtn">Enable Fog</button>
+                        <button class="btn btn-danger" onclick="resetFog()">Reset Fog</button>
+                    </div>
+                </div>
+
+                <!-- Tokens -->
+                <div class="section">
+                    <div class="section-header">🎲 Tokens</div>
+
+                    <details style="margin: 0.5rem 0;">
+                        <summary style="cursor: pointer; color: var(--accent-gold); font-weight: 500; margin-bottom: 0.5rem;">Quick Add (16 Tokens)</summary>
+                        <div class="asset-picker" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="asset-btn" onclick="addTokenWithIcon('#e74c3c', '⚔️')" style="background: #e74c3c;">⚔️</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#3498db', '🛡️')" style="background: #3498db;">🛡️</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#2ecc71', '🏹')" style="background: #2ecc71;">🏹</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#9b59b6', '🔮')" style="background: #9b59b6;">🔮</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#f39c12', '🗡️')" style="background: #f39c12;">🗡️</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#1abc9c', '🪄')" style="background: #1abc9c;">🪄</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#e67e22', '🦁')" style="background: #e67e22;">🦁</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#34495e', '🎵')" style="background: #34495e;">🎵</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#8b4513', '👹')" style="background: #8b4513;">👹</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#2c3e50', '💀')" style="background: #2c3e50;">💀</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#c0392b', '👿')" style="background: #c0392b;">👿</div>
+                            <div class="asset-btn" onclick="addTokenWithIcon('#27ae60', '🐉')" style="background: #27ae60;">🐉</div>
+                        </div>
+                    </details>
+
+                    <div class="btn-group" style="margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="addCustomToken()">+ Custom</button>
+                        <button class="btn btn-danger" onclick="clearAllTokens()">Clear All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-        <!-- Inkarnate Section -->
-        <div class="tool-section">
-            <div class="tool-header">
-                <h2>
-                    <span class="status-indicator" id="inkarnateIndicator"></span>
-                    Inkarnate Map Builder
-                </h2>
-                <div class="tool-controls">
-                    <button onclick="openInkarnate()" class="btn btn-primary">🚀 Launch Inkarnate</button>
-                    <button onclick="focusInkarnate()" class="btn btn-secondary">🔍 Focus Window</button>
-                    <button onclick="closeInkarnate()" class="btn btn-warning">✖ Close</button>
-                </div>
-            </div>
-            <div class="window-placeholder">
-                <h3>Ready to create maps!</h3>
-                <p>Click "Launch Inkarnate" to open the map builder in a new window. Create your maps there, export them as images, and transfer them to Owlbear Rodeo below.</p>
-                <div class="window-status closed" id="inkarnateStatus">
-                    <span>⚫</span>
-                    <span>Window Closed</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Transfer Section -->
-        <div class="transfer-section">
-            <h3>🔄 Export Maps from Inkarnate to Owlbear Rodeo</h3>
-            
-            <div class="transfer-instructions">
-                <strong>How to transfer your maps:</strong>
-                <ol>
-                    <li>In Inkarnate (above), create or open your map</li>
-                    <li>Click the "Export" button in Inkarnate</li>
-                    <li>Choose your preferred resolution (higher for better quality)</li>
-                    <li>Download the map as a PNG or JPG file</li>
-                    <li>In Owlbear Rodeo (below), click "Import" or drag the image into the scene</li>
-                    <li>Your map is now ready for gameplay!</li>
-                </ol>
+    <!-- Login Modal -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <div class="login-header">
+                <div class="login-icon">🧙</div>
+                <h2>Dungeon Master</h2>
+                <p>Enter credentials to access controls</p>
             </div>
 
-            <div class="file-upload">
-                <label for="mapUpload">
-                    📤 Upload Map to Transfer
-                </label>
-                <input type="file" id="mapUpload" accept="image/*" onchange="handleMapUpload(event)">
-                <div id="uploadStatus"></div>
-            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>USERNAME</label>
+                    <input type="text" id="dmUsername" placeholder="Wizard" autocomplete="username" required>
+                </div>
 
-            <div class="quick-links">
-                <div class="quick-link-card">
-                    <h4>💾 Recommended Export Settings</h4>
-                    <p>Use 2K or 4K resolution for best quality on Owlbear Rodeo's grid system</p>
+                <div class="form-group">
+                    <label>PASSWORD</label>
+                    <input type="password" id="dmPassword" placeholder="Wizard" autocomplete="current-password" required>
                 </div>
-                <div class="quick-link-card">
-                    <h4>🎨 Map Types</h4>
-                    <p>Battle maps, world maps, and region maps all work great in Owlbear Rodeo</p>
-                </div>
-                <div class="quick-link-card">
-                    <h4>📏 Grid Alignment</h4>
-                    <p>Enable grid in Inkarnate to match Owlbear Rodeo's grid overlay</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Owlbear Rodeo Section -->
-        <div class="tool-section">
-            <div class="tool-header">
-                <h2>
-                    <span class="status-indicator" id="owlbearIndicator"></span>
-                    Owlbear Rodeo Virtual Tabletop
-                </h2>
-                <div class="tool-controls">
-                    <button onclick="openOwlbear()" class="btn btn-primary">🚀 Launch Owlbear Rodeo</button>
-                    <button onclick="createNewRoom()" class="btn btn-primary">➕ New Room</button>
-                    <button onclick="focusOwlbear()" class="btn btn-secondary">🔍 Focus Window</button>
-                    <button onclick="closeOwlbear()" class="btn btn-warning">✖ Close</button>
+                <div class="error-message" id="loginError">
+                    Invalid credentials. Please try again.
                 </div>
-            </div>
-            <div class="window-placeholder">
-                <h3>Ready for gameplay!</h3>
-                <p>Click "Launch Owlbear Rodeo" to open your virtual tabletop. Import your Inkarnate maps by dragging the image files into the Owlbear Rodeo window.</p>
-                <div class="window-status closed" id="owlbearStatus">
-                    <span>⚫</span>
-                    <span>Window Closed</span>
-                </div>
-            </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">ENTER</button>
+                <button type="button" class="btn" onclick="closeLogin()" style="width: 100%; margin-top: 0.75rem; justify-content: center;">Cancel</button>
+            </form>
         </div>
     </div>
+
+    <!-- Hidden file input for loading -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
 
     <script>
-        let inkarnateWindow = null;
-        let owlbearWindow = null;
+        // Login System
+        const DM_CREDENTIALS = {
+            username: 'Wizard',
+            password: 'Wizard'
+        };
+        
+        let isLoggedIn = false;
 
-        // Check window status periodically
-        setInterval(checkWindowStatus, 1000);
+        function showLogin() {
+            document.getElementById('loginOverlay').classList.add('active');
+            document.getElementById('dmUsername').focus();
+        }
 
-        function openInkarnate() {
-            if (inkarnateWindow && !inkarnateWindow.closed) {
-                inkarnateWindow.focus();
+        function closeLogin() {
+            document.getElementById('loginOverlay').classList.remove('active');
+            document.getElementById('loginError').classList.remove('show');
+            document.getElementById('dmUsername').value = '';
+            document.getElementById('dmPassword').value = '';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('dmUsername').value;
+            const password = document.getElementById('dmPassword').value;
+            const errorMsg = document.getElementById('loginError');
+
+            if (username === DM_CREDENTIALS.username && password === DM_CREDENTIALS.password) {
+                isLoggedIn = true;
+                closeLogin();
+                openDMPanel();
+                document.getElementById('dmPassword').value = '';
+            } else {
+                errorMsg.classList.add('show');
+                setTimeout(() => errorMsg.classList.remove('show'), 3000);
+                document.getElementById('dmPassword').value = '';
+                document.getElementById('dmPassword').focus();
+            }
+        }
+
+        function openDMPanel() {
+            if (!isLoggedIn) {
+                showLogin();
                 return;
             }
-            
-            inkarnateWindow = window.open(
-                'https://inkarnate.com/maps/',
-                'InkarnateWindow',
-                'width=1400,height=900,menubar=yes,toolbar=yes,location=yes,status=yes,scrollbars=yes,resizable=yes'
-            );
-            
-            updateStatus('inkarnate', true);
+            document.getElementById('dmPanel').classList.add('open');
         }
 
-        function openOwlbear() {
-            if (owlbearWindow && !owlbearWindow.closed) {
-                owlbearWindow.focus();
-                return;
-            }
-            
-            owlbearWindow = window.open(
-                'https://www.owlbear.rodeo/',
-                'OwlbearWindow',
-                'width=1400,height=900,menubar=yes,toolbar=yes,location=yes,status=yes,scrollbars=yes,resizable=yes'
-            );
-            
-            updateStatus('owlbear', true);
+        function closeDMPanel() {
+            document.getElementById('dmPanel').classList.remove('open');
         }
 
-        function focusInkarnate() {
-            if (inkarnateWindow && !inkarnateWindow.closed) {
-                inkarnateWindow.focus();
+        // Session Management
+        let sessions = [];
+        let currentSessionId = null;
+
+        function createSession(name = 'Untitled Session') {
+            const session = {
+                id: Date.now() + Math.random(),
+                name: name,
+                created: new Date().toISOString(),
+                map: null,
+                tokens: [],
+                fog: null,
+                zoom: 1,
+                panX: 0,
+                panY: 0
+            };
+            sessions.push(session);
+            return session;
+        }
+
+        function createNewSession() {
+            const name = prompt('Enter session name:', 'Campaign ' + (sessions.length + 1));
+            if (!name) return;
+            
+            const session = createSession(name);
+            currentSessionId = session.id;
+            renderTabs();
+            switchToSession(session.id);
+        }
+
+        function switchToSession(sessionId) {
+            currentSessionId = sessionId;
+            const session = sessions.find(s => s.id === sessionId);
+            if (!session) return;
+
+            // Load session state
+            document.getElementById('sessionName').textContent = session.name;
+            tokens = session.tokens || [];
+            zoom = session.zoom || 1;
+            panX = session.panX || 0;
+            panY = session.panY || 0;
+            
+            // Load map
+            if (session.map) {
+                const img = new Image();
+                img.onload = function() {
+                    backgroundImage = img;
+                    drawTable();
+                };
+                img.src = session.map;
             } else {
-                alert('Inkarnate window is not open. Click "Launch Inkarnate" first.');
+                backgroundImage = null;
+                drawTable();
             }
-        }
 
-        function focusOwlbear() {
-            if (owlbearWindow && !owlbearWindow.closed) {
-                owlbearWindow.focus();
+            // Load fog
+            if (session.fog) {
+                const img = new Image();
+                img.onload = function() {
+                    fogCtx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
+                    fogCtx.drawImage(img, 0, 0);
+                    drawTable();
+                };
+                img.src = session.fog;
             } else {
-                alert('Owlbear Rodeo window is not open. Click "Launch Owlbear Rodeo" first.');
-            }
-        }
-
-        function closeInkarnate() {
-            if (inkarnateWindow && !inkarnateWindow.closed) {
-                inkarnateWindow.close();
-                inkarnateWindow = null;
-                updateStatus('inkarnate', false);
-            }
-        }
-
-        function closeOwlbear() {
-            if (owlbearWindow && !owlbearWindow.closed) {
-                owlbearWindow.close();
-                owlbearWindow = null;
-                updateStatus('owlbear', false);
-            }
-        }
-
-        function createNewRoom() {
-            window.open(
-                'https://www.owlbear.rodeo/',
-                '_blank',
-                'width=1400,height=900,menubar=yes,toolbar=yes,location=yes,status=yes,scrollbars=yes,resizable=yes'
-            );
-        }
-
-        function checkWindowStatus() {
-            // Check Inkarnate
-            if (inkarnateWindow && inkarnateWindow.closed) {
-                inkarnateWindow = null;
-                updateStatus('inkarnate', false);
-            } else if (inkarnateWindow && !inkarnateWindow.closed) {
-                updateStatus('inkarnate', true);
+                resetFog();
             }
 
-            // Check Owlbear
-            if (owlbearWindow && owlbearWindow.closed) {
-                owlbearWindow = null;
-                updateStatus('owlbear', false);
-            } else if (owlbearWindow && !owlbearWindow.closed) {
-                updateStatus('owlbear', true);
-            }
-        }
-
-        function updateStatus(tool, isOpen) {
-            const statusDiv = document.getElementById(tool + 'Status');
-            const indicator = document.getElementById(tool + 'Indicator');
+            document.getElementById('zoomSlider').value = zoom * 100;
+            document.getElementById('zoomValue').textContent = Math.round(zoom * 100) + '%';
             
-            if (isOpen) {
-                statusDiv.className = 'window-status open';
-                statusDiv.innerHTML = '<span>🟢</span><span>Window Open</span>';
-                if (indicator) indicator.style.background = '#4CAF50';
-            } else {
-                statusDiv.className = 'window-status closed';
-                statusDiv.innerHTML = '<span>⚫</span><span>Window Closed</span>';
-                if (indicator) indicator.style.background = '#f44336';
-            }
+            renderTabs();
+            drawTable();
         }
 
-        function handleMapUpload(event) {
-            const file = event.target.files[0];
-            const statusDiv = document.getElementById('uploadStatus');
+        function saveCurrentSession() {
+            if (!currentSessionId) return;
             
-            if (file) {
-                if (file.type.startsWith('image/')) {
-                    statusDiv.textContent = `✅ ${file.name} ready! Save this file and drag it into the Owlbear Rodeo window.`;
-                    statusDiv.style.color = '#4CAF50';
-                    
-                    // Store in browser for easy access
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        localStorage.setItem('lastUploadedMap', e.target.result);
-                        localStorage.setItem('lastUploadedMapName', file.name);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    statusDiv.textContent = '⚠️ Please upload an image file (PNG, JPG, etc.)';
-                    statusDiv.style.color = '#ff9800';
+            const session = sessions.find(s => s.id === currentSessionId);
+            if (!session) return;
+
+            session.tokens = JSON.parse(JSON.stringify(tokens));
+            session.zoom = zoom;
+            session.panX = panX;
+            session.panY = panY;
+            
+            if (backgroundImage) {
+                session.map = tableCanvas.toDataURL();
+            }
+            
+            session.fog = fogCanvas.toDataURL();
+        }
+
+        function deleteSession(sessionId) {
+            if (!confirm('Delete this session?')) return;
+            
+            sessions = sessions.filter(s => s.id !== sessionId);
+            
+            if (currentSessionId === sessionId) {
+                currentSessionId = sessions.length > 0 ? sessions[0].id : null;
+                if (currentSessionId) {
+                    switchToSession(currentSessionId);
                 }
             }
+            
+            renderTabs();
         }
 
-        // Initialize status indicators
-        window.addEventListener('load', function() {
-            updateStatus('inkarnate', false);
-            updateStatus('owlbear', false);
+        function renderTabs() {
+            const container = document.getElementById('tabContainer');
+            container.innerHTML = sessions.map(session => `
+                <div class="tab ${session.id === currentSessionId ? 'active' : ''}" onclick="switchToSession(${session.id})">
+                    <span>${session.name}</span>
+                    <button class="tab-close" onclick="event.stopPropagation(); deleteSession(${session.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Save/Load System
+        function saveSession() {
+            saveCurrentSession();
             
-            const lastMap = localStorage.getItem('lastUploadedMapName');
-            if (lastMap) {
-                const statusDiv = document.getElementById('uploadStatus');
-                statusDiv.textContent = `Last uploaded: ${lastMap}`;
-                statusDiv.style.color = '#2196F3';
+            const saveData = {
+                version: '1.0',
+                sessions: sessions.map(s => ({
+                    ...s,
+                    tokens: s.tokens || []
+                })),
+                currentSessionId: currentSessionId
+            };
+
+            const dataStr = JSON.stringify(saveData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'mystic-tabletop-' + Date.now() + '.json';
+            link.click();
+            URL.revokeObjectURL(url);
+
+            alert('✅ Session saved successfully!');
+        }
+
+        function loadSession() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileLoad(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (!data.sessions || !Array.isArray(data.sessions)) {
+                        throw new Error('Invalid save file format');
+                    }
+
+                    sessions = data.sessions;
+                    currentSessionId = data.currentSessionId || (sessions.length > 0 ? sessions[0].id : null);
+                    
+                    if (currentSessionId) {
+                        switchToSession(currentSessionId);
+                    }
+                    
+                    renderTabs();
+                    alert('✅ Sessions loaded successfully!');
+                } catch (err) {
+                    alert('❌ Error loading file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Drawing Tools
+        let currentTool = 'brush';
+        let brushSize = 15;
+        let currentColor = '#4a7c59';
+        let selectedStamp = '🌲';
+        let fogMode = false;
+        let fogBrushSize = 60;
+        let revealMode = true;
+        let zoom = 1;
+        let panX = 0;
+        let panY = 0;
+        let tokens = [];
+        let backgroundImage = null;
+        let isDrawing = false;
+        let draggedToken = null;
+        let lastX = 0;
+        let lastY = 0;
+        let startX = 0;
+        let startY = 0;
+
+        const mapCanvas = document.getElementById('mapCanvas');
+        const mapCtx = mapCanvas.getContext('2d');
+        const tableCanvas = document.getElementById('tabletopCanvas');
+        const tableCtx = tableCanvas.getContext('2d');
+
+        const fogCanvas = document.createElement('canvas');
+        const fogCtx = fogCanvas.getContext('2d');
+        fogCanvas.width = tableCanvas.width;
+        fogCanvas.height = tableCanvas.height;
+
+        function init() {
+            mapCtx.fillStyle = '#f5f5dc';
+            mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+
+            fogCtx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
+
+            // Create default session
+            const defaultSession = createSession('My Campaign');
+            currentSessionId = defaultSession.id;
+            renderTabs();
+            
+            drawTable();
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-card').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tool + 'Tool').classList.add('active');
+        }
+
+        function updateBrushSize(value) {
+            brushSize = value;
+            document.getElementById('brushSizeValue').textContent = value + 'px';
+        }
+
+        function selectStamp(emoji) {
+            selectedStamp = emoji;
+            setTool('stamp');
+            document.querySelectorAll('.asset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        document.getElementById('colorPicker').addEventListener('change', (e) => {
+            currentColor = e.target.value;
+        });
+
+        // Map Canvas Events
+        mapCanvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            const rect = mapCanvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            lastX = startX;
+            lastY = startY;
+
+            if (currentTool === 'brush') {
+                mapCtx.beginPath();
+                mapCtx.moveTo(startX, startY);
+                mapCtx.strokeStyle = currentColor;
+                mapCtx.lineWidth = brushSize;
+                mapCtx.lineCap = 'round';
+                mapCtx.lineJoin = 'round';
+            } else if (currentTool === 'eraser') {
+                mapCtx.beginPath();
+                mapCtx.moveTo(startX, startY);
+            } else if (currentTool === 'fill') {
+                mapCtx.fillStyle = currentColor;
+                mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+            } else if (currentTool === 'stamp') {
+                mapCtx.font = '64px Arial';
+                mapCtx.fillText(selectedStamp, startX - 32, startY + 16);
+            } else if (currentTool === 'text') {
+                const text = prompt('Enter text:');
+                if (text) {
+                    mapCtx.fillStyle = currentColor;
+                    mapCtx.font = '32px Raleway';
+                    mapCtx.fillText(text, startX, startY);
+                }
             }
         });
 
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', function() {
-            if (inkarnateWindow && !inkarnateWindow.closed) {
-                // Windows will remain open
+        mapCanvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+
+            const rect = mapCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (currentTool === 'brush') {
+                mapCtx.lineTo(x, y);
+                mapCtx.stroke();
+            } else if (currentTool === 'eraser') {
+                mapCtx.globalCompositeOperation = 'destination-out';
+                mapCtx.lineWidth = brushSize;
+                mapCtx.lineCap = 'round';
+                mapCtx.lineTo(x, y);
+                mapCtx.stroke();
+                mapCtx.globalCompositeOperation = 'source-over';
             }
-            if (owlbearWindow && !owlbearWindow.closed) {
-                // Windows will remain open
+
+            lastX = x;
+            lastY = y;
+        });
+
+        mapCanvas.addEventListener('mouseup', (e) => {
+            if (!isDrawing) return;
+
+            const rect = mapCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (currentTool === 'line') {
+                mapCtx.strokeStyle = currentColor;
+                mapCtx.lineWidth = brushSize;
+                mapCtx.lineCap = 'round';
+                mapCtx.beginPath();
+                mapCtx.moveTo(startX, startY);
+                mapCtx.lineTo(x, y);
+                mapCtx.stroke();
+            } else if (currentTool === 'rect') {
+                mapCtx.fillStyle = currentColor;
+                mapCtx.fillRect(startX, startY, x - startX, y - startY);
+            } else if (currentTool === 'circle') {
+                const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
+                mapCtx.fillStyle = currentColor;
+                mapCtx.beginPath();
+                mapCtx.arc(startX, startY, radius, 0, Math.PI * 2);
+                mapCtx.fill();
+            }
+
+            isDrawing = false;
+        });
+
+        mapCanvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+        });
+
+        function clearMap() {
+            if (confirm('Clear the entire map?')) {
+                mapCtx.fillStyle = '#f5f5dc';
+                mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+            }
+        }
+
+        function exportMap() {
+            const link = document.createElement('a');
+            link.download = 'map-' + Date.now() + '.png';
+            link.href = mapCanvas.toDataURL();
+            link.click();
+        }
+
+        function loadMapToTable() {
+            const img = new Image();
+            img.onload = function() {
+                backgroundImage = img;
+                drawTable();
+                saveCurrentSession();
+            };
+            img.src = mapCanvas.toDataURL();
+        }
+
+        // Virtual Tabletop
+        function drawTable() {
+            tableCtx.save();
+            tableCtx.clearRect(0, 0, tableCanvas.width, tableCanvas.height);
+
+            tableCtx.translate(panX, panY);
+            tableCtx.scale(zoom, zoom);
+
+            if (backgroundImage) {
+                tableCtx.drawImage(backgroundImage, 0, 0, tableCanvas.width / zoom, tableCanvas.height / zoom);
+            } else {
+                tableCtx.fillStyle = '#161b22';
+                tableCtx.fillRect(0, 0, tableCanvas.width / zoom, tableCanvas.height / zoom);
+                tableCtx.strokeStyle = '#1f2937';
+                tableCtx.lineWidth = 2 / zoom;
+                const gridSize = 50;
+                for (let x = 0; x <= tableCanvas.width / zoom; x += gridSize) {
+                    tableCtx.beginPath();
+                    tableCtx.moveTo(x, 0);
+                    tableCtx.lineTo(x, tableCanvas.height / zoom);
+                    tableCtx.stroke();
+                }
+                for (let y = 0; y <= tableCanvas.height / zoom; y += gridSize) {
+                    tableCtx.beginPath();
+                    tableCtx.moveTo(0, y);
+                    tableCtx.lineTo(tableCanvas.width / zoom, y);
+                    tableCtx.stroke();
+                }
+            }
+
+            tokens.forEach(token => {
+                tableCtx.fillStyle = token.color;
+                tableCtx.beginPath();
+                tableCtx.arc(token.x, token.y, 30, 0, Math.PI * 2);
+                tableCtx.fill();
+                tableCtx.strokeStyle = '#fbbf24';
+                tableCtx.lineWidth = 3 / zoom;
+                tableCtx.stroke();
+
+                tableCtx.fillStyle = '#fff';
+                tableCtx.font = `${32 / zoom}px Arial`;
+                tableCtx.textAlign = 'center';
+                tableCtx.textBaseline = 'middle';
+                tableCtx.fillText(token.icon, token.x, token.y);
+            });
+
+            tableCtx.restore();
+
+            tableCtx.save();
+            tableCtx.translate(panX, panY);
+            tableCtx.scale(zoom, zoom);
+            tableCtx.drawImage(fogCanvas, 0, 0);
+            tableCtx.restore();
+        }
+
+        function updateZoom(value) {
+            zoom = value / 100;
+            document.getElementById('zoomValue').textContent = Math.round(value) + '%';
+            drawTable();
+            saveCurrentSession();
+        }
+
+        // Fog of War
+        function updateFogBrush(value) {
+            fogBrushSize = parseInt(value);
+            document.getElementById('fogBrushValue').textContent = value + 'px';
+        }
+
+        function toggleFogMode() {
+            fogMode = !fogMode;
+            const btn = document.getElementById('fogModeBtn');
+            if (fogMode) {
+                btn.textContent = '🌫️ Fog Active';
+                btn.classList.add('btn-success');
+                tableCanvas.style.cursor = 'crosshair';
+            } else {
+                btn.textContent = 'Enable Fog';
+                btn.classList.remove('btn-success');
+                tableCanvas.style.cursor = 'grab';
+            }
+        }
+
+        function updateFogMode() {
+            revealMode = document.getElementById('revealMode').checked;
+        }
+
+        function resetFog() {
+            fogCtx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
+            fogCtx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
+            drawTable();
+            saveCurrentSession();
+        }
+
+        function applyFog(x, y) {
+            if (revealMode) {
+                fogCtx.globalCompositeOperation = 'destination-out';
+                fogCtx.beginPath();
+                fogCtx.arc(x, y, fogBrushSize, 0, Math.PI * 2);
+                fogCtx.fill();
+            } else {
+                fogCtx.globalCompositeOperation = 'source-over';
+                fogCtx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+                fogCtx.beginPath();
+                fogCtx.arc(x, y, fogBrushSize, 0, Math.PI * 2);
+                fogCtx.fill();
+            }
+        }
+
+        // Token Management
+        function addTokenWithIcon(color, icon) {
+            tokens.push({
+                x: (tableCanvas.width / 2 - panX) / zoom,
+                y: (tableCanvas.height / 2 - panY) / zoom,
+                color: color,
+                icon: icon
+            });
+            drawTable();
+            saveCurrentSession();
+        }
+
+        function addCustomToken() {
+            const icon = prompt('Enter token emoji/icon:') || '⚔️';
+            const color = prompt('Enter hex color (e.g., #ff0000):') || '#' + Math.floor(Math.random()*16777215).toString(16);
+            addTokenWithIcon(color, icon);
+        }
+
+        function clearAllTokens() {
+            if (confirm('Remove all tokens?')) {
+                tokens = [];
+                drawTable();
+                saveCurrentSession();
+            }
+        }
+
+        // Table Canvas Events
+        tableCanvas.addEventListener('mousedown', (e) => {
+            const rect = tableCanvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - panX) / zoom;
+            const mouseY = (e.clientY - rect.top - panY) / zoom;
+
+            if (fogMode) {
+                isDrawing = true;
+                applyFog(mouseX, mouseY);
+                drawTable();
+                return;
+            }
+
+            draggedToken = tokens.find(token => {
+                const dx = mouseX - token.x;
+                const dy = mouseY - token.y;
+                return Math.sqrt(dx * dx + dy * dy) < 30;
+            });
+
+            if (draggedToken) {
+                isDrawing = true;
+            } else {
+                lastX = e.clientX;
+                lastY = e.clientY;
+                isDrawing = true;
             }
         });
+
+        tableCanvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+
+            const rect = tableCanvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - panX) / zoom;
+            const mouseY = (e.clientY - rect.top - panY) / zoom;
+
+            if (fogMode) {
+                applyFog(mouseX, mouseY);
+                drawTable();
+                return;
+            }
+
+            if (draggedToken) {
+                draggedToken.x = mouseX;
+                draggedToken.y = mouseY;
+            } else {
+                panX += e.clientX - lastX;
+                panY += e.clientY - lastY;
+                lastX = e.clientX;
+                lastY = e.clientY;
+            }
+
+            drawTable();
+        });
+
+        tableCanvas.addEventListener('mouseup', () => {
+            if (isDrawing && (draggedToken || fogMode)) {
+                saveCurrentSession();
+            }
+            isDrawing = false;
+            draggedToken = null;
+        });
+
+        tableCanvas.addEventListener('mouseleave', () => {
+            if (isDrawing && (draggedToken || fogMode)) {
+                saveCurrentSession();
+            }
+            isDrawing = false;
+            draggedToken = null;
+        });
+
+        // Initialize
+        init();
     </script>
 </body>
 </html>
