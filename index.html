@@ -235,26 +235,97 @@
             display: flex;
             flex-direction: column;
             padding: 1rem;
+            position: relative;
+        }
+
+        /* Atmospheric particles */
+        .player-view::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            animation: ambientPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes ambientPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         .tabletop-wrapper {
             flex: 1;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            border: 1px solid var(--border-subtle);
+            background: linear-gradient(135deg, rgba(22, 27, 34, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border-focus);
             overflow: hidden;
-            box-shadow: var(--shadow-deep);
+            box-shadow: 
+                var(--shadow-deep),
+                0 0 60px rgba(139, 92, 246, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        .tabletop-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(180deg, 
+                rgba(139, 92, 246, 0.08) 0%, 
+                transparent 100%);
+            pointer-events: none;
+            z-index: 1;
         }
 
         .tabletop-controls {
-            padding: 0.75rem 1rem;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border-subtle);
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, 
+                rgba(31, 41, 55, 0.8) 0%, 
+                rgba(22, 27, 34, 0.9) 100%);
+            border-bottom: 1px solid var(--border-focus);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .session-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-primary) 50%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+            position: relative;
+        }
+
+        .session-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent-gold) 50%, 
+                transparent 100%);
+            opacity: 0.5;
         }
 
         .control-group {
@@ -299,7 +370,47 @@
         .canvas-area {
             flex: 1;
             position: relative;
-            background: radial-gradient(circle at center, rgba(22, 27, 34, 0.8) 0%, rgba(13, 17, 23, 0.95) 100%);
+            background: 
+                radial-gradient(circle at center, rgba(22, 27, 34, 0.7) 0%, rgba(13, 17, 23, 1) 100%),
+                linear-gradient(135deg, rgba(139, 92, 246, 0.02) 0%, rgba(236, 72, 153, 0.02) 100%);
+            overflow: hidden;
+        }
+
+        .canvas-area::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 30%),
+                radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 30%);
+            animation: slowRotate 60s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes slowRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .canvas-area::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(to bottom, 
+                    transparent 0%, 
+                    rgba(251, 191, 36, 0.03) 50%, 
+                    transparent 100%);
+            pointer-events: none;
+            animation: ambientSweep 10s ease-in-out infinite;
+        }
+
+        @keyframes ambientSweep {
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.6; transform: translateY(-20px); }
         }
 
         #tabletopCanvas {
@@ -763,6 +874,147 @@
                 display: none;
             }
         }
+
+        /* Player Token Bar */
+        .player-token-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(22, 27, 34, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%);
+            border-top: 1px solid var(--border-focus);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 90;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .player-token-bar.show {
+            transform: translateY(0);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--border-focus);
+            border-radius: 8px;
+        }
+
+        .player-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .player-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .my-tokens {
+            flex: 1;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding: 0.25rem 0;
+        }
+
+        .my-tokens::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .player-token {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid var(--border-subtle);
+            cursor: move;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .player-token:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+
+        .player-token.selected {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+        }
+
+        .token-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .mini-btn {
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .mini-btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        /* Player Login Modal */
+        .player-login-btn {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s;
+            z-index: 95;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-login-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
+        }
+
+        .player-login-btn.logged-in {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
     </style>
 </head>
 <body>
@@ -794,7 +1046,7 @@
             <div class="tabletop-wrapper">
                 <div class="tabletop-controls">
                     <div class="control-group">
-                        <span class="control-label" id="sessionName">Untitled Session</span>
+                        <span class="session-title" id="sessionName">The Fractured Sky</span>
                     </div>
                     <div class="control-group">
                         <span class="control-label">Zoom:</span>
@@ -816,6 +1068,43 @@
             </div>
 
             <div class="dm-content">
+                <!-- Import Maps -->
+                <div class="section">
+                    <div class="section-header">📥 Import Maps</div>
+
+                    <div class="info-box">
+                        Import maps from professional tools or upload your own images
+                    </div>
+
+                    <div style="display: grid; gap: 0.75rem; margin: 1rem 0;">
+                        <a href="https://inkarnate.com/maps/" target="_blank" class="btn btn-primary" style="text-decoration: none; justify-content: center;">
+                            🗺️ Open Inkarnate
+                        </a>
+                        <a href="https://www.owlbear.rodeo/" target="_blank" class="btn btn-primary" style="text-decoration: none; justify-content: center;">
+                            🎲 Open Owlbear Rodeo
+                        </a>
+                    </div>
+
+                    <div class="info-box" style="font-size: 0.8rem; line-height: 1.5;">
+                        <strong>How to import:</strong><br>
+                        1. Create/export map from Inkarnate or Owlbear<br>
+                        2. Click "Upload Image" below<br>
+                        3. Select your downloaded map file<br>
+                        4. Click "Load to Table" to display
+                    </div>
+
+                    <input type="file" id="mapUpload" accept="image/*" style="display: none;" onchange="handleMapUpload(event)">
+                    
+                    <div class="btn-group" style="margin-top: 1rem;">
+                        <button class="btn btn-success" onclick="document.getElementById('mapUpload').click()" style="flex: 1;">
+                            📤 Upload Image
+                        </button>
+                        <button class="btn btn-primary" onclick="loadMapToTable()">
+                            📥 Load to Table
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Map Builder -->
                 <div class="section">
                     <div class="section-header">🗺️ Map Builder</div>
@@ -993,12 +1282,12 @@
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>USERNAME</label>
-                    <input type="text" id="dmUsername" placeholder="Wizard" autocomplete="username" required>
+                    <input type="text" id="dmUsername" placeholder="Enter username" autocomplete="off" required>
                 </div>
 
                 <div class="form-group">
                     <label>PASSWORD</label>
-                    <input type="password" id="dmPassword" placeholder="Wizard" autocomplete="current-password" required>
+                    <input type="password" id="dmPassword" placeholder="Enter password" autocomplete="off" required>
                 </div>
 
                 <div class="error-message" id="loginError">
@@ -1011,8 +1300,58 @@
         </div>
     </div>
 
-    <!-- Hidden file input for loading -->
+    <!-- Player Login Modal -->
+    <div class="login-overlay" id="playerLoginOverlay">
+        <div class="login-modal">
+            <div class="login-header">
+                <div class="login-icon">👤</div>
+                <h2>Player Login</h2>
+                <p>Join the adventure</p>
+            </div>
+
+            <form onsubmit="handlePlayerLogin(event)">
+                <div class="form-group">
+                    <label>PLAYER NAME</label>
+                    <input type="text" id="playerName" placeholder="Enter your character name" autocomplete="off" required>
+                </div>
+
+                <div class="form-group">
+                    <label>PASSWORD (Optional)</label>
+                    <input type="password" id="playerPassword" placeholder="Leave empty for guest" autocomplete="off">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">JOIN GAME</button>
+                <button type="button" class="btn" onclick="closePlayerLogin()" style="width: 100%; margin-top: 0.75rem; justify-content: center;">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Player Token Bar -->
+    <div class="player-token-bar" id="playerTokenBar">
+        <div class="player-info">
+            <div class="player-avatar" id="playerAvatar">👤</div>
+            <div class="player-name" id="displayPlayerName">Guest</div>
+        </div>
+
+        <div class="my-tokens" id="myTokens">
+            <!-- Player tokens will appear here -->
+        </div>
+
+        <div class="token-controls">
+            <button class="mini-btn" onclick="showImportToken()">📤 Import</button>
+            <button class="mini-btn" onclick="createPlayerToken()">➕ New</button>
+            <button class="mini-btn" onclick="playerLogout()">🚪 Logout</button>
+        </div>
+    </div>
+
+    <!-- Player Login Button -->
+    <button class="player-login-btn" id="playerLoginBtn" onclick="showPlayerLogin()">
+        👤
+    </button>
+
+    <!-- Hidden file inputs -->
     <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
+    <input type="file" id="tokenImport" accept="image/*" style="display: none;" onchange="handleTokenImport(event)">
 
     <script>
         // Login System
@@ -1065,6 +1404,150 @@
 
         function closeDMPanel() {
             document.getElementById('dmPanel').classList.remove('open');
+        }
+
+        // Player Login System
+        let currentPlayer = null;
+        let playerTokens = [];
+        let selectedPlayerToken = null;
+
+        function showPlayerLogin() {
+            document.getElementById('playerLoginOverlay').classList.add('active');
+            document.getElementById('playerName').focus();
+        }
+
+        function closePlayerLogin() {
+            document.getElementById('playerLoginOverlay').classList.remove('active');
+            document.getElementById('playerName').value = '';
+            document.getElementById('playerPassword').value = '';
+        }
+
+        function handlePlayerLogin(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('playerName').value.trim();
+            const password = document.getElementById('playerPassword').value;
+
+            if (!name) return;
+
+            currentPlayer = {
+                name: name,
+                password: password,
+                avatar: getRandomEmoji(),
+                tokens: []
+            };
+
+            document.getElementById('displayPlayerName').textContent = name;
+            document.getElementById('playerAvatar').textContent = currentPlayer.avatar;
+            document.getElementById('playerTokenBar').classList.add('show');
+            document.getElementById('playerLoginBtn').classList.add('logged-in');
+            document.getElementById('playerLoginBtn').textContent = '✓';
+
+            closePlayerLogin();
+            renderPlayerTokens();
+        }
+
+        function playerLogout() {
+            if (!confirm('Logout from the game?')) return;
+            
+            currentPlayer = null;
+            playerTokens = [];
+            selectedPlayerToken = null;
+            document.getElementById('playerTokenBar').classList.remove('show');
+            document.getElementById('playerLoginBtn').classList.remove('logged-in');
+            document.getElementById('playerLoginBtn').textContent = '👤';
+            document.getElementById('myTokens').innerHTML = '';
+        }
+
+        function getRandomEmoji() {
+            const emojis = ['⚔️', '🛡️', '🏹', '🔮', '🗡️', '🪄', '🦁', '🎵', '🧙', '🧝', '🧚', '🧞'];
+            return emojis[Math.floor(Math.random() * emojis.length)];
+        }
+
+        function createPlayerToken() {
+            if (!currentPlayer) {
+                showPlayerLogin();
+                return;
+            }
+
+            const icon = prompt('Enter token emoji/icon:', '⚔️') || '⚔️';
+            const color = prompt('Enter hex color (e.g., #ff0000):', '#e74c3c') || '#e74c3c';
+
+            const token = {
+                id: Date.now() + Math.random(),
+                icon: icon,
+                color: color,
+                owner: currentPlayer.name
+            };
+
+            playerTokens.push(token);
+            renderPlayerTokens();
+        }
+
+        function renderPlayerTokens() {
+            const container = document.getElementById('myTokens');
+            container.innerHTML = playerTokens.map(token => `
+                <div class="player-token ${selectedPlayerToken === token.id ? 'selected' : ''}" 
+                     style="background: ${token.color};"
+                     onclick="selectPlayerToken(${token.id})"
+                     draggable="true"
+                     ondragstart="handleTokenDragStart(event, ${token.id})">
+                    ${token.icon}
+                </div>
+            `).join('');
+        }
+
+        function selectPlayerToken(tokenId) {
+            selectedPlayerToken = selectedPlayerToken === tokenId ? null : tokenId;
+            renderPlayerTokens();
+        }
+
+        function handleTokenDragStart(event, tokenId) {
+            const token = playerTokens.find(t => t.id === tokenId);
+            if (!token) return;
+
+            event.dataTransfer.effectAllowed = 'copy';
+            event.dataTransfer.setData('text/plain', JSON.stringify({
+                type: 'player-token',
+                token: token
+            }));
+        }
+
+        function showImportToken() {
+            if (!currentPlayer) {
+                showPlayerLogin();
+                return;
+            }
+            document.getElementById('tokenImport').click();
+        }
+
+        function handleTokenImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const icon = prompt('Enter emoji to represent this token:', '🎭') || '🎭';
+                const color = prompt('Enter background color (hex):', '#3498db') || '#3498db';
+
+                const token = {
+                    id: Date.now() + Math.random(),
+                    icon: icon,
+                    color: color,
+                    image: e.target.result,
+                    owner: currentPlayer.name
+                };
+
+                playerTokens.push(token);
+                renderPlayerTokens();
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
         }
 
         // Session Management
@@ -1282,7 +1765,7 @@
             fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
 
             // Create default session
-            const defaultSession = createSession('My Campaign');
+            const defaultSession = createSession('The Fractured Sky');
             currentSessionId = defaultSession.id;
             renderTabs();
             
@@ -1315,8 +1798,10 @@
         mapCanvas.addEventListener('mousedown', (e) => {
             isDrawing = true;
             const rect = mapCanvas.getBoundingClientRect();
-            startX = e.clientX - rect.left;
-            startY = e.clientY - rect.top;
+            const scaleX = mapCanvas.width / rect.width;
+            const scaleY = mapCanvas.height / rect.height;
+            startX = (e.clientX - rect.left) * scaleX;
+            startY = (e.clientY - rect.top) * scaleY;
             lastX = startX;
             lastY = startY;
 
@@ -1350,8 +1835,10 @@
             if (!isDrawing) return;
 
             const rect = mapCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const scaleX = mapCanvas.width / rect.width;
+            const scaleY = mapCanvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
 
             if (currentTool === 'brush') {
                 mapCtx.lineTo(x, y);
@@ -1373,8 +1860,10 @@
             if (!isDrawing) return;
 
             const rect = mapCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const scaleX = mapCanvas.width / rect.width;
+            const scaleY = mapCanvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
 
             if (currentTool === 'line') {
                 mapCtx.strokeStyle = currentColor;
@@ -1426,6 +1915,42 @@
             img.src = mapCanvas.toDataURL();
         }
 
+        function handleMapUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file (PNG, JPG, etc.)');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Load to map canvas first
+                const img = new Image();
+                img.onload = function() {
+                    // Clear and resize map canvas to fit image
+                    mapCtx.fillStyle = '#f5f5dc';
+                    mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+                    
+                    // Draw uploaded image centered and scaled
+                    const scale = Math.min(
+                        mapCanvas.width / img.width,
+                        mapCanvas.height / img.height
+                    );
+                    const x = (mapCanvas.width - img.width * scale) / 2;
+                    const y = (mapCanvas.height - img.height * scale) / 2;
+                    
+                    mapCtx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                    
+                    alert('✅ Map uploaded! Click "Load to Table" to display it.');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
         // Virtual Tabletop
         function drawTable() {
             tableCtx.save();
@@ -1457,19 +1982,44 @@
             }
 
             tokens.forEach(token => {
+                // Draw token background
                 tableCtx.fillStyle = token.color;
                 tableCtx.beginPath();
                 tableCtx.arc(token.x, token.y, 30, 0, Math.PI * 2);
                 tableCtx.fill();
-                tableCtx.strokeStyle = '#fbbf24';
+                
+                // Draw border (gold for DM tokens, purple for player tokens)
+                tableCtx.strokeStyle = token.owner ? var(--accent-primary) : '#fbbf24';
                 tableCtx.lineWidth = 3 / zoom;
                 tableCtx.stroke();
 
-                tableCtx.fillStyle = '#fff';
-                tableCtx.font = `${32 / zoom}px Arial`;
-                tableCtx.textAlign = 'center';
-                tableCtx.textBaseline = 'middle';
-                tableCtx.fillText(token.icon, token.x, token.y);
+                // Draw image or icon
+                if (token.image) {
+                    // If token has custom image
+                    const img = new Image();
+                    img.src = token.image;
+                    tableCtx.save();
+                    tableCtx.beginPath();
+                    tableCtx.arc(token.x, token.y, 28, 0, Math.PI * 2);
+                    tableCtx.clip();
+                    tableCtx.drawImage(img, token.x - 28, token.y - 28, 56, 56);
+                    tableCtx.restore();
+                } else {
+                    // Draw emoji icon
+                    tableCtx.fillStyle = '#fff';
+                    tableCtx.font = `${32 / zoom}px Arial`;
+                    tableCtx.textAlign = 'center';
+                    tableCtx.textBaseline = 'middle';
+                    tableCtx.fillText(token.icon, token.x, token.y);
+                }
+
+                // Draw owner name if player token
+                if (token.owner && currentPlayer && token.owner === currentPlayer.name) {
+                    tableCtx.fillStyle = 'rgba(139, 92, 246, 0.8)';
+                    tableCtx.font = `${12 / zoom}px Raleway`;
+                    tableCtx.textAlign = 'center';
+                    tableCtx.fillText(token.owner, token.x, token.y + 45);
+                }
             });
 
             tableCtx.restore();
@@ -1562,6 +2112,38 @@
         }
 
         // Table Canvas Events
+        tableCanvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        tableCanvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            
+            try {
+                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                if (data.type === 'player-token') {
+                    const rect = tableCanvas.getBoundingClientRect();
+                    const x = (e.clientX - rect.left - panX) / zoom;
+                    const y = (e.clientY - rect.top - panY) / zoom;
+
+                    tokens.push({
+                        x: x,
+                        y: y,
+                        color: data.token.color,
+                        icon: data.token.icon,
+                        owner: data.token.owner,
+                        image: data.token.image || null
+                    });
+
+                    drawTable();
+                    saveCurrentSession();
+                }
+            } catch (err) {
+                // Not a player token drop
+            }
+        });
+
         tableCanvas.addEventListener('mousedown', (e) => {
             const rect = tableCanvas.getBoundingClientRect();
             const mouseX = (e.clientX - rect.left - panX) / zoom;
@@ -1577,7 +2159,15 @@
             draggedToken = tokens.find(token => {
                 const dx = mouseX - token.x;
                 const dy = mouseY - token.y;
-                return Math.sqrt(dx * dx + dy * dy) < 30;
+                const isNearToken = Math.sqrt(dx * dx + dy * dy) < 30;
+                
+                // Players can only move their own tokens
+                if (currentPlayer && token.owner) {
+                    return isNearToken && token.owner === currentPlayer.name;
+                }
+                
+                // DM can move any token without owner, or if logged in as DM
+                return isNearToken && (!token.owner || isLoggedIn);
             });
 
             if (draggedToken) {
