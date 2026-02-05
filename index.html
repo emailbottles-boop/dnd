@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Fractured Sky - Virtual Tabletop</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -34,7 +32,6 @@
             height: 100vh;
         }
 
-        /* Header */
         .header {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
@@ -83,7 +80,6 @@
             color: white;
         }
 
-        /* Main Layout */
         .container {
             display: flex;
             height: calc(100vh - 70px);
@@ -152,22 +148,95 @@
             flex: 1;
             position: relative;
             background: radial-gradient(circle at center, #1a1f2e 0%, var(--bg-dark) 100%);
+            overflow: hidden;
         }
 
-        canvas {
+        #mainCanvas {
             display: block;
-            width: 100%;
-            height: 100%;
             cursor: grab;
         }
 
-        canvas:active {
+        #mainCanvas:active {
             cursor: grabbing;
+        }
+
+        /* Stamp Sidebar */
+        .stamp-sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+        }
+
+        .stamp-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .stamp-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-hover);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .stamp-content {
+            padding: 1rem;
+        }
+
+        .stamp-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .stamp-category h4 {
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stamp-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .stamp-item {
+            aspect-ratio: 1;
+            background: var(--bg-hover);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .stamp-item:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .stamp-item.selected {
+            border-color: var(--gold);
+            background: rgba(251, 191, 36, 0.1);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
         }
 
         /* DM Panel */
         .dm-panel {
-            width: 400px;
+            width: 380px;
             background: var(--bg-card);
             border-left: 1px solid var(--border);
             overflow-y: auto;
@@ -213,8 +282,7 @@
         .section h3 {
             margin-bottom: 0.75rem;
             color: var(--gold);
-            font-size: 1.1rem;
-            transition: all 0.3s;
+            font-size: 1rem;
         }
 
         .section.active h3 {
@@ -223,7 +291,7 @@
 
         .tool-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 0.5rem;
             margin: 0.75rem 0;
         }
@@ -235,7 +303,7 @@
             border-radius: 6px;
             cursor: pointer;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.2s;
         }
 
@@ -258,8 +326,8 @@
         }
 
         .control-row label {
-            min-width: 80px;
-            font-size: 0.9rem;
+            min-width: 60px;
+            font-size: 0.85rem;
             color: var(--text-dim);
         }
 
@@ -271,43 +339,45 @@
             cursor: pointer;
         }
 
-        .asset-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 0.5rem;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 0.5rem;
+        .grid-selector {
             background: var(--bg-dark);
-            border-radius: 6px;
-            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 2px solid var(--border);
         }
 
-        .asset-btn {
-            aspect-ratio: 1;
-            background: var(--bg-hover);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .asset-btn:hover {
-            transform: scale(1.1);
+        .grid-selector.active {
             border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .grid-info {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .grid-info .current {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .grid-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
         }
 
         #mapCanvas {
             width: 100%;
-            height: 300px;
+            height: 250px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: white;
             cursor: crosshair;
+            margin: 0.5rem 0;
         }
 
         .btn-group {
@@ -316,7 +386,6 @@
             margin-top: 0.75rem;
         }
 
-        /* Modal */
         .modal {
             position: fixed;
             inset: 0;
@@ -395,7 +464,6 @@
             display: block;
         }
 
-        /* Player Bar */
         .player-bar {
             position: fixed;
             bottom: 0;
@@ -474,7 +542,6 @@
             transform: scale(1.1);
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -491,7 +558,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="header">
         <div class="title">✨ THE FRACTURED SKY</div>
         <div class="header-actions">
@@ -501,21 +567,140 @@
         </div>
     </div>
 
-    <!-- Main Container -->
     <div class="container">
-        <!-- Main Area -->
         <div class="main-area">
             <div class="tabletop">
                 <div class="tabletop-header">
-                    <div class="session-name" id="sessionName">The Fractured Sky</div>
+                    <div class="session-name">The Fractured Sky</div>
                     <div class="zoom-controls">
                         <span style="color: var(--text-dim); font-size: 0.9rem;">Zoom:</span>
                         <input type="range" class="slider" id="zoomSlider" min="25" max="200" value="100" oninput="setZoom(this.value)">
                         <span id="zoomValue" style="min-width: 50px; font-size: 0.9rem;">100%</span>
                     </div>
                 </div>
-                <div class="canvas-container">
-                    <canvas id="mainCanvas" width="1600" height="900"></canvas>
+                <div class="canvas-container" id="canvasContainer">
+                    <canvas id="mainCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stamp Sidebar -->
+        <div class="stamp-sidebar" id="stampSidebar">
+            <div class="stamp-header">
+                <h3 style="color: var(--gold);">🏰 Stamp Library</h3>
+                <button class="btn" onclick="closeStamps()">✕</button>
+            </div>
+            <div class="stamp-content">
+                <div class="stamp-category">
+                    <h4>🪨 Terrain Textures</h4>
+                    <div class="stamp-grid">
+                        <div class="stamp-item" onclick="selectStamp('⬜')" title="Stone">⬜</div>
+                        <div class="stamp-item" onclick="selectStamp('⬛')" title="Dark Stone">⬛</div>
+                        <div class="stamp-item" onclick="selectStamp('🟫')" title="Dirt">🟫</div>
+                        <div class="stamp-item" onclick="selectStamp('🟤')" title="Dark Dirt">🟤</div>
+                        <div class="stamp-item" onclick="selectStamp('🪨')" title="Gravel/Rock">🪨</div>
+                        <div class="stamp-item" onclick="selectStamp('🟩')" title="Grass">🟩</div>
+                        <div class="stamp-item" onclick="selectStamp('🌿')" title="Dense Grass">🌿</div>
+                        <div class="stamp-item" onclick="selectStamp('🟦')" title="Water">🟦</div>
+                        <div class="stamp-item" onclick="selectStamp('🌊')" title="Deep Water">🌊</div>
+                        <div class="stamp-item" onclick="selectStamp('🟨')" title="Sand">🟨</div>
+                        <div class="stamp-item" onclick="selectStamp('🏖️')" title="Beach">🏖️</div>
+                        <div class="stamp-item" onclick="selectStamp('❄️')" title="Snow/Ice">❄️</div>
+                    </div>
+                </div>
+                <div class="stamp-category">
+                    <h4>🌉 Structures & Paths</h4>
+                    <div class="stamp-grid">
+                        <div class="stamp-item" onclick="selectStamp('🌉')" title="Bridge">🌉</div>
+                        <div class="stamp-item" onclick="selectStamp('🛤️')" title="Road/Path">🛤️</div>
+                        <div class="stamp-item" onclick="selectStamp('⬜')" title="Stone Path">⬜</div>
+                        <div class="stamp-item" onclick="selectStamp('🪵')" title="Wood Planks">🪵</div>
+                        <div class="stamp-item" onclick="selectStamp('🧱')" title="Brick">🧱</div>
+                        <div class="stamp-item" onclick="selectStamp('⛲')" title="Fountain">⛲</div>
+                        <div class="stamp-item" onclick="selectStamp('🚪')" title="Door">🚪</div>
+                        <div class="stamp-item" onclick="selectStamp('🪟')" title="Window">🪟</div>
+                    </div>
+                </div>
+                <div class="stamp-category">
+                    <h4>🏔️ Natural Features</h4>
+                    <div class="stamp-grid">
+                        <div class="stamp-item" onclick="selectStamp('🏔️')">🏔️</div>
+                        <div class="stamp-item" onclick="selectStamp('⛰️')">⛰️</div>
+                        <div class="stamp-item" onclick="selectStamp('🗻')">🗻</div>
+                        <div class="stamp-item" onclick="selectStamp('🌋')">🌋</div>
+                        <div class="stamp-item" onclick="selectStamp('🏝️')">🏝️</div>
+                        <div class="stamp-item" onclick="selectStamp('🏞️')">🏞️</div>
+                        <div class="stamp-item" onclick="selectStamp('🏜️')">🏜️</div>
+                        <div class="stamp-item" onclick="selectStamp('🪨')">🪨</div>
+                    </div>
+                </div>
+                <div class="stamp-category">
+                    <h4>🌲 Vegetation</h4>
+                    <div class="stamp-grid">
+                        <div class="stamp-item" onclick="selectStamp('🌲')">🌲</div>
+                        <div class="stamp-item" onclick="selectStamp('🌳')">🌳</div>
+                        <div class="stamp-item" onclick="selectStamp('🌴')">🌴</div>
+                        <div class="stamp-item" onclick="selectStamp('🎋')">🎋</div>
+                        <div class="stamp-item" onclick="selectStamp('🎍')">🎍</div>
+                        <div class="stamp-item" onclick="selectStamp('🌾')">🌾</div>
+                        <div class="stamp-item" onclick="selectStamp('🍃')">🍃</div>
+                        <div class="stamp-item" onclick="selectStamp('🍄')">🍄</div>
+                        <div class="stamp-item" onclick="selectStamp('🌻')">🌻</div>
+                        <div class="stamp-item" onclick="selectStamp('🌹')">🌹</div>
+                        <div class="stamp-item" onclick="selectStamp('🌺')">🌺</div>
+                        <div class="stamp-item" onclick="selectStamp('🌷')">🌷</div>
+                    </div>
+                </div>
+                <div class="stamp-category">
+                    <h4>🏰 Buildings</h4>
+                    <div class="stamp-grid">
+                        <div class="stamp-item" onclick="selectStamp('🏰')">🏰</div>
+                        <div class="stamp-item" onclick="selectStamp('🏯')">🏯</div>
+                        <div class="stamp-item" onclick="selectStamp('🏛️')">🏛️</div>
+                        <div class="stamp-item" onclick="selectStamp('⛪')">⛪</div>
+                        <div class="stamp-item" onclick="selectStamp('🕌')">🕌</div>
+                        <div class="stamp-item" onclick="selectStamp('🏘️')">🏘️</div>
+                        <div class="stamp-item" onclick="selectStamp('🏚️')">🏚️</div>
+                        <div class="stamp-item" onclick="selectStamp('🏠')">🏠</div>
+                        <div class="stamp-item" onclick="selectStamp('🏡')">🏡</div>
+                        <div class="stamp-item" onclick="selectStamp('⛺')">⛺</div>
+                        <div class="stamp-item" onclick="selectStamp('🏕️')">🏕️</div>
+                        <div class="stamp-item" onclick="selectStamp('🗼')">🗼</div>
+                    </div>
+                </div>
+                <div class="stamp-category">
+                    <h4>⚔️ Objects & Items</h4>
+                    <div class="stamp-grid">
+                        <div class="stamp-item" onclick="selectStamp('⚔️')">⚔️</div>
+                        <div class="stamp-item" onclick="selectStamp('🗡️')">🗡️</div>
+                        <div class="stamp-item" onclick="selectStamp('🛡️')">🛡️</div>
+                        <div class="stamp-item" onclick="selectStamp('🏹')">🏹</div>
+                        <div class="stamp-item" onclick="selectStamp('🔮')">🔮</div>
+                        <div class="stamp-item" onclick="selectStamp('⚗️')">⚗️</div>
+                        <div class="stamp-item" onclick="selectStamp('📜')">📜</div>
+                        <div class="stamp-item" onclick="selectStamp('💎')">💎</div>
+                        <div class="stamp-item" onclick="selectStamp('👑')">👑</div>
+                        <div class="stamp-item" onclick="selectStamp('🕯️')">🕯️</div>
+                        <div class="stamp-item" onclick="selectStamp('🔥')">🔥</div>
+                        <div class="stamp-item" onclick="selectStamp('⚡')">⚡</div>
+                    </div>
+                </div>
+                <div class="stamp-category">
+                    <h4>🐉 Creatures</h4>
+                    <div class="stamp-grid">
+                        <div class="stamp-item" onclick="selectStamp('🐉')">🐉</div>
+                        <div class="stamp-item" onclick="selectStamp('🐲')">🐲</div>
+                        <div class="stamp-item" onclick="selectStamp('🦅')">🦅</div>
+                        <div class="stamp-item" onclick="selectStamp('🦉')">🦉</div>
+                        <div class="stamp-item" onclick="selectStamp('🦇')">🦇</div>
+                        <div class="stamp-item" onclick="selectStamp('🐺')">🐺</div>
+                        <div class="stamp-item" onclick="selectStamp('🦁')">🦁</div>
+                        <div class="stamp-item" onclick="selectStamp('🐻')">🐻</div>
+                        <div class="stamp-item" onclick="selectStamp('🦌')">🦌</div>
+                        <div class="stamp-item" onclick="selectStamp('🐗')">🐗</div>
+                        <div class="stamp-item" onclick="selectStamp('💀')">💀</div>
+                        <div class="stamp-item" onclick="selectStamp('☠️')">☠️</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -527,30 +712,36 @@
                 <button class="btn" onclick="closeDM()">✕</button>
             </div>
             <div class="dm-content">
-                <!-- Import Maps -->
                 <div class="section">
                     <h3>📥 Import Maps</h3>
                     <a href="https://inkarnate.com/maps/" target="_blank" class="btn btn-primary" style="width: 100%; text-decoration: none; display: block; text-align: center; margin-bottom: 0.5rem;">
                         🗺️ Open Inkarnate
                     </a>
-                    <a href="https://www.owlbear.rodeo/" target="_blank" class="btn btn-primary" style="width: 100%; text-decoration: none; display: block; text-align: center; margin-bottom: 0.75rem;">
+                    <a href="https://www.owlbear.rodeo/" target="_blank" class="btn btn-primary" style="width: 100%; text-decoration: none; display: block; text-align: center;">
                         🎲 Open Owlbear Rodeo
                     </a>
-                    <input type="file" id="mapUpload" accept="image/*" style="display: none;" onchange="uploadMap(event)">
-                    <div class="btn-group">
-                        <button class="btn" onclick="document.getElementById('mapUpload').click()" style="flex: 1;">📤 Upload Map</button>
-                        <button class="btn btn-primary" onclick="loadMapToTable()">Load to Table</button>
-                    </div>
                 </div>
 
-                <!-- Map Builder -->
                 <div class="section" id="mapSection">
-                    <h3>🗺️ Map Builder</h3>
+                    <h3>🗺️ Grid Map Builder</h3>
+                    
+                    <div class="grid-selector active">
+                        <div class="grid-info">
+                            Building cell: <span class="current" id="currentCell">A1</span>
+                        </div>
+                        <div class="grid-nav">
+                            <button class="btn" onclick="moveGrid(-1, 0)">← Left</button>
+                            <button class="btn" onclick="moveGrid(1, 0)">Right →</button>
+                            <button class="btn" onclick="moveGrid(0, -1)">↑ Up</button>
+                            <button class="btn" onclick="moveGrid(0, 1)">↓ Down</button>
+                        </div>
+                    </div>
+
                     <div class="tool-grid">
                         <div class="tool-btn active" onclick="setTool('brush')" id="brushBtn">🖌️<br>Brush</div>
                         <div class="tool-btn" onclick="setTool('fill')" id="fillBtn">🪣<br>Fill</div>
                         <div class="tool-btn" onclick="setTool('eraser')" id="eraserBtn">🧹<br>Erase</div>
-                        <div class="tool-btn" onclick="setTool('stamp')" id="stampBtn">🏰<br>Stamp</div>
+                        <div class="tool-btn" onclick="setTool('stamp'); openStamps();" id="stampBtn">🏰<br>Stamps</div>
                     </div>
                     <div class="control-row">
                         <label>Color:</label>
@@ -558,52 +749,26 @@
                     </div>
                     <div class="control-row">
                         <label>Size:</label>
-                        <input type="range" class="slider" id="sizeSlider" min="1" max="50" value="10" oninput="setSize(this.value)" style="flex: 1;">
-                        <span id="sizeValue">10px</span>
+                        <input type="range" class="slider" id="sizeSlider" min="1" max="30" value="8" oninput="setSize(this.value)" style="flex: 1;">
+                        <span id="sizeValue">8px</span>
                     </div>
-                    <details>
-                        <summary style="cursor: pointer; color: var(--gold); margin: 0.5rem 0;">Assets (40+)</summary>
-                        <div class="asset-grid">
-                            <div class="asset-btn" onclick="setStamp('🌲')">🌲</div>
-                            <div class="asset-btn" onclick="setStamp('🌳')">🌳</div>
-                            <div class="asset-btn" onclick="setStamp('🏔️')">🏔️</div>
-                            <div class="asset-btn" onclick="setStamp('🌊')">🌊</div>
-                            <div class="asset-btn" onclick="setStamp('🏰')">🏰</div>
-                            <div class="asset-btn" onclick="setStamp('🏯')">🏯</div>
-                            <div class="asset-btn" onclick="setStamp('⛪')">⛪</div>
-                            <div class="asset-btn" onclick="setStamp('🏘️')">🏘️</div>
-                            <div class="asset-btn" onclick="setStamp('🛤️')">🛤️</div>
-                            <div class="asset-btn" onclick="setStamp('🌉')">🌉</div>
-                            <div class="asset-btn" onclick="setStamp('🔮')">🔮</div>
-                            <div class="asset-btn" onclick="setStamp('⚔️')">⚔️</div>
-                            <div class="asset-btn" onclick="setStamp('🛡️')">🛡️</div>
-                            <div class="asset-btn" onclick="setStamp('🏹')">🏹</div>
-                            <div class="asset-btn" onclick="setStamp('💎')">💎</div>
-                            <div class="asset-btn" onclick="setStamp('🔥')">🔥</div>
-                            <div class="asset-btn" onclick="setStamp('⚡')">⚡</div>
-                            <div class="asset-btn" onclick="setStamp('💀')">💀</div>
-                            <div class="asset-btn" onclick="setStamp('🐉')">🐉</div>
-                            <div class="asset-btn" onclick="setStamp('🦅')">🦅</div>
-                        </div>
-                    </details>
-                    <canvas id="mapCanvas" width="800" height="450"></canvas>
+                    <canvas id="mapCanvas" width="400" height="400"></canvas>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="loadMapToTable()">Load to Table</button>
-                        <button class="btn" onclick="clearMap()">Clear</button>
+                        <button class="btn btn-primary" onclick="submitCell()" style="flex: 1;">✓ Submit Cell</button>
+                        <button class="btn" onclick="clearCell()">Clear</button>
                     </div>
                 </div>
 
-                <!-- Fog of War -->
                 <div class="section" id="fogSection">
                     <h3>🌫️ Fog of War</h3>
                     <div class="control-row">
-                        <label>Brush Size:</label>
+                        <label>Size:</label>
                         <input type="range" class="slider" id="fogSize" min="20" max="150" value="60" oninput="setFogSize(this.value)" style="flex: 1;">
                         <span id="fogSizeValue">60px</span>
                     </div>
                     <div class="control-row">
                         <label>
-                            <input type="checkbox" id="revealMode" checked> Reveal (uncheck to hide)
+                            <input type="checkbox" id="revealMode" checked> Reveal
                         </label>
                     </div>
                     <div class="btn-group">
@@ -612,34 +777,20 @@
                     </div>
                 </div>
 
-                <!-- Tokens -->
-                <div class="section" id="tokenSection">
+                <div class="section" id="tokensSection">
                     <h3>🎲 Tokens</h3>
-                    <details>
-                        <summary style="cursor: pointer; color: var(--gold); margin: 0.5rem 0;">Quick Add (12)</summary>
-                        <div class="asset-grid" style="grid-template-columns: repeat(4, 1fr);">
-                            <div class="asset-btn" onclick="addToken('#e74c3c', '⚔️')" style="background: #e74c3c;">⚔️</div>
-                            <div class="asset-btn" onclick="addToken('#3498db', '🛡️')" style="background: #3498db;">🛡️</div>
-                            <div class="asset-btn" onclick="addToken('#2ecc71', '🏹')" style="background: #2ecc71;">🏹</div>
-                            <div class="asset-btn" onclick="addToken('#9b59b6', '🔮')" style="background: #9b59b6;">🔮</div>
-                            <div class="asset-btn" onclick="addToken('#f39c12', '🗡️')" style="background: #f39c12;">🗡️</div>
-                            <div class="asset-btn" onclick="addToken('#1abc9c', '🪄')" style="background: #1abc9c;">🪄</div>
-                            <div class="asset-btn" onclick="addToken('#8b4513', '👹')" style="background: #8b4513;">👹</div>
-                            <div class="asset-btn" onclick="addToken('#2c3e50', '💀')" style="background: #2c3e50;">💀</div>
-                            <div class="asset-btn" onclick="addToken('#c0392b', '👿')" style="background: #c0392b;">👿</div>
-                            <div class="asset-btn" onclick="addToken('#27ae60', '🐉')" style="background: #27ae60;">🐉</div>
-                        </div>
-                    </details>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="addCustomToken()">+ Custom</button>
-                        <button class="btn" onclick="clearTokens()">Clear All</button>
+                        <button class="btn btn-primary" onclick="addToken('#e74c3c', '⚔️')">⚔️</button>
+                        <button class="btn btn-primary" onclick="addToken('#3498db', '🛡️')">🛡️</button>
+                        <button class="btn btn-primary" onclick="addToken('#2ecc71', '🏹')">🏹</button>
+                        <button class="btn btn-primary" onclick="addToken('#9b59b6', '🔮')">🔮</button>
                     </div>
+                    <button class="btn" onclick="addCustomToken()" style="width: 100%; margin-top: 0.5rem;">+ Custom Token</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- DM Login Modal -->
     <div class="modal" id="dmModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -662,7 +813,6 @@
         </div>
     </div>
 
-    <!-- Player Login Modal -->
     <div class="modal" id="playerModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -680,25 +830,20 @@
         </div>
     </div>
 
-    <!-- Player Bar -->
     <div class="player-bar" id="playerBar">
         <div class="player-info">
-            <div style="width: 36px; height: 36px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" id="playerAvatar">👤</div>
+            <div style="width: 36px; height: 36px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">👤</div>
             <span id="playerNameDisplay">Guest</span>
         </div>
         <div class="player-tokens" id="playerTokens"></div>
         <div style="display: flex; gap: 0.5rem;">
-            <input type="file" id="tokenUpload" accept="image/*" style="display: none;" onchange="uploadToken(event)">
-            <button class="btn" onclick="document.getElementById('tokenUpload').click()">📤 Import</button>
-            <button class="btn" onclick="createPlayerToken()">+ New</button>
+            <button class="btn" onclick="createPlayerToken()">+ New Token</button>
             <button class="btn" onclick="playerLogout()">Logout</button>
         </div>
     </div>
 
-    <!-- Player Login Button -->
     <button class="player-login-btn" onclick="showPlayerLogin()" id="playerBtn">👤</button>
 
-    <!-- Hidden File Input -->
     <input type="file" id="fileLoad" accept=".json" style="display: none;" onchange="handleLoad(event)">
 
     <script>
@@ -711,61 +856,22 @@
         let tokens = [];
         let tool = 'brush';
         let color = '#4a7c59';
-        let size = 10;
+        let size = 8;
         let stamp = '🌲';
         let fogSize = 60;
-        let fogMode = false;
-        let tokenMode = false;
-        let currentMode = 'map'; // 'map', 'fog', or 'token'
+        let currentMode = 'map';
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
         let dragToken = null;
-        let mapImage = null;
         let playerTokens = [];
-
-        // Mode Management
-        function setMode(mode) {
-            currentMode = mode;
-            
-            // Remove all active states
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            
-            // Highlight active section
-            if (mode === 'map') {
-                const mapSection = document.getElementById('mapSection');
-                if (mapSection) mapSection.classList.add('active');
-                fogMode = false;
-                tokenMode = false;
-                canvas.style.cursor = 'grab';
-                updateFogButton();
-            } else if (mode === 'fog') {
-                const fogSection = document.getElementById('fogSection');
-                if (fogSection) fogSection.classList.add('active');
-                fogMode = true;
-                tokenMode = false;
-                canvas.style.cursor = 'crosshair';
-                updateFogButton();
-            } else if (mode === 'token') {
-                const tokenSection = document.getElementById('tokensSection');
-                if (tokenSection) tokenSection.classList.add('active');
-                fogMode = false;
-                tokenMode = true;
-                canvas.style.cursor = 'default';
-                updateFogButton();
-            }
-        }
-
-        function updateFogButton() {
-            const btn = document.getElementById('fogBtn');
-            if (fogMode && currentMode === 'fog') {
-                btn.textContent = '🌫️ Fog Mode Active';
-                btn.classList.add('btn-primary');
-            } else {
-                btn.textContent = 'Enable Fog Mode';
-                btn.classList.remove('btn-primary');
-            }
-        }
+        
+        // Grid system
+        const GRID_SIZE = 400;
+        const CELL_SIZE = 400;
+        let currentGridX = 0;
+        let currentGridY = 0;
+        let gridCells = {};
 
         // Canvas
         const canvas = document.getElementById('mainCanvas');
@@ -774,54 +880,67 @@
         const mapCtx = mapCanvas.getContext('2d');
         const fogCanvas = document.createElement('canvas');
         const fogCtx = fogCanvas.getContext('2d');
-        fogCanvas.width = canvas.width;
-        fogCanvas.height = canvas.height;
 
-        // Initialize
-        function init() {
-            mapCtx.fillStyle = '#f5f5dc';
-            mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-            fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
-            fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
+        function resizeCanvas() {
+            const container = document.getElementById('canvasContainer');
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+            fogCanvas.width = canvas.width;
+            fogCanvas.height = canvas.height;
             
-            // Center view
-            const container = canvas.parentElement;
-            panX = (container.offsetWidth - canvas.width) / 2;
-            panY = (container.offsetHeight - canvas.height) / 2;
-            
-            // Set initial mode
-            setMode('map');
+            panX = 0;
+            panY = 0;
             
             draw();
         }
 
-        // Draw
+        function init() {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            mapCtx.fillStyle = '#f5f5dc';
+            mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+            fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
+            fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
+            setMode('map');
+        }
+
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.translate(panX, panY);
             ctx.scale(zoom, zoom);
 
-            // Background
-            if (mapImage) {
-                ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.fillStyle = '#1a1f2e';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                // Grid
-                ctx.strokeStyle = '#2a2f3e';
-                ctx.lineWidth = 1;
-                for (let x = 0; x < canvas.width; x += 50) {
-                    ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvas.height);
-                    ctx.stroke();
-                }
-                for (let y = 0; y < canvas.height; y += 50) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(canvas.width, y);
-                    ctx.stroke();
+            // Draw grid
+            const gridStart = -2;
+            const gridEnd = 2;
+            
+            for (let gx = gridStart; gx <= gridEnd; gx++) {
+                for (let gy = gridStart; gy <= gridEnd; gy++) {
+                    const x = gx * GRID_SIZE;
+                    const y = gy * GRID_SIZE;
+                    
+                    // Cell background
+                    ctx.fillStyle = '#1a1f2e';
+                    ctx.fillRect(x, y, GRID_SIZE, GRID_SIZE);
+                    
+                    // Cell content
+                    const key = `${gx},${gy}`;
+                    if (gridCells[key]) {
+                        ctx.drawImage(gridCells[key], x, y, GRID_SIZE, GRID_SIZE);
+                    }
+                    
+                    // Grid lines
+                    ctx.strokeStyle = '#2a2f3e';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
+                    
+                    // Current cell highlight
+                    if (gx === currentGridX && gy === currentGridY && isDM) {
+                        ctx.strokeStyle = '#8b5cf6';
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
+                    }
                 }
             }
 
@@ -831,7 +950,7 @@
                 ctx.beginPath();
                 ctx.arc(t.x, t.y, 30, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.strokeStyle = t.owner ? '#8b5cf6' : '#fbbf24';
+                ctx.strokeStyle = '#fbbf24';
                 ctx.lineWidth = 3;
                 ctx.stroke();
                 ctx.fillStyle = '#fff';
@@ -839,7 +958,7 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(t.icon, t.x, t.y);
-                if (t.owner && currentPlayer && t.owner === currentPlayer) {
+                if (t.owner) {
                     ctx.fillStyle = '#8b5cf6';
                     ctx.font = '12px Inter';
                     ctx.fillText(t.owner, t.x, t.y + 45);
@@ -856,39 +975,78 @@
             ctx.restore();
         }
 
-        // DM Functions
-        function openDM() {
-            document.getElementById('dmModal').classList.add('active');
+        // Grid Navigation
+        function moveGrid(dx, dy) {
+            currentGridX += dx;
+            currentGridY += dy;
+            updateGridDisplay();
+            draw();
         }
 
-        function closeDMModal() {
-            document.getElementById('dmModal').classList.remove('active');
-            document.getElementById('dmError').classList.remove('show');
+        function updateGridDisplay() {
+            const cols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const col = cols[Math.abs(currentGridX % 26)];
+            const row = Math.abs(currentGridY) + 1;
+            document.getElementById('currentCell').textContent = col + row;
         }
 
-        function dmLogin(e) {
-            e.preventDefault();
-            const user = document.getElementById('dmUser').value;
-            const pass = document.getElementById('dmPass').value;
-            if (user === 'Wizard' && pass === 'Wizard') {
-                isDM = true;
-                closeDMModal();
-                document.getElementById('dmPanel').classList.add('open');
+        function submitCell() {
+            const key = `${currentGridX},${currentGridY}`;
+            const cellCanvas = document.createElement('canvas');
+            cellCanvas.width = CELL_SIZE;
+            cellCanvas.height = CELL_SIZE;
+            const cellCtx = cellCanvas.getContext('2d');
+            cellCtx.drawImage(mapCanvas, 0, 0);
+            gridCells[key] = cellCanvas;
+            draw();
+            alert(`Cell submitted! Move to another cell to continue building.`);
+        }
+
+        function clearCell() {
+            mapCtx.fillStyle = '#f5f5dc';
+            mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+        }
+
+        // Modes
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            if (mode === 'map') {
+                const mapSection = document.getElementById('mapSection');
+                if (mapSection) mapSection.classList.add('active');
+                canvas.style.cursor = 'grab';
+            } else if (mode === 'fog') {
+                const fogSection = document.getElementById('fogSection');
+                if (fogSection) fogSection.classList.add('active');
+                canvas.style.cursor = 'crosshair';
+            } else if (mode === 'token') {
+                const tokenSection = document.getElementById('tokensSection');
+                if (tokenSection) tokenSection.classList.add('active');
+                canvas.style.cursor = 'default';
+            }
+            
+            updateFogButton();
+        }
+
+        function updateFogButton() {
+            const btn = document.getElementById('fogBtn');
+            if (currentMode === 'fog') {
+                btn.textContent = '🌫️ Fog Active';
+                btn.classList.add('btn-primary');
             } else {
-                document.getElementById('dmError').classList.add('show');
+                btn.textContent = 'Enable Fog';
+                btn.classList.remove('btn-primary');
             }
         }
 
-        function closeDM() {
-            document.getElementById('dmPanel').classList.remove('open');
-        }
-
-        // Map Tools
+        // Tools
         function setTool(t) {
             tool = t;
-            setMode('map'); // Activate map mode when selecting tools
+            setMode('map');
             document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(t + 'Btn').classList.add('active');
+            const btn = document.getElementById(t + 'Btn');
+            if (btn) btn.classList.add('active');
         }
 
         function setSize(v) {
@@ -896,8 +1054,22 @@
             document.getElementById('sizeValue').textContent = v + 'px';
         }
 
-        function setStamp(s) {
+        // Stamps
+        function openStamps() {
+            document.getElementById('stampSidebar').classList.add('open');
+            tool = 'stamp';
+            setMode('map');
+        }
+
+        function closeStamps() {
+            document.getElementById('stampSidebar').classList.remove('open');
+        }
+
+        function selectStamp(s) {
             stamp = s;
+            document.querySelectorAll('.stamp-item').forEach(item => item.classList.remove('selected'));
+            event.target.classList.add('selected');
+            closeStamps();
             setTool('stamp');
         }
 
@@ -960,39 +1132,6 @@
             }
         });
 
-        function clearMap() {
-            if (confirm('Clear map?')) {
-                mapCtx.fillStyle = '#f5f5dc';
-                mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-            }
-        }
-
-        function uploadMap(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const img = new Image();
-                img.onload = () => {
-                    mapCtx.fillStyle = '#f5f5dc';
-                    mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-                    mapCtx.drawImage(img, 0, 0, mapCanvas.width, mapCanvas.height);
-                    alert('Map uploaded! Click "Load to Table"');
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function loadMapToTable() {
-            const img = new Image();
-            img.onload = () => {
-                mapImage = img;
-                draw();
-            };
-            img.src = mapCanvas.toDataURL();
-        }
-
         // Fog
         function setFogSize(v) {
             fogSize = v;
@@ -1001,11 +1140,8 @@
 
         function toggleFog() {
             if (currentMode === 'fog') {
-                // Turn off fog mode
                 setMode('map');
-                canvas.style.cursor = 'grab';
             } else {
-                // Turn on fog mode
                 setMode('fog');
             }
         }
@@ -1016,28 +1152,35 @@
             draw();
         }
 
+        function applyFog(x, y) {
+            const reveal = document.getElementById('revealMode').checked;
+            if (reveal) {
+                fogCtx.globalCompositeOperation = 'destination-out';
+            } else {
+                fogCtx.globalCompositeOperation = 'source-over';
+                fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
+            }
+            fogCtx.beginPath();
+            fogCtx.arc(x, y, fogSize, 0, Math.PI * 2);
+            fogCtx.fill();
+            draw();
+        }
+
         // Tokens
         function addToken(c, i) {
-            setMode('token'); // Activate token mode when adding tokens
-            tokens.push({ x: canvas.width / 2, y: canvas.height / 2, color: c, icon: i, owner: null });
+            setMode('token');
+            tokens.push({ x: 200, y: 200, color: c, icon: i, owner: null });
             draw();
         }
 
         function addCustomToken() {
-            setMode('token'); // Activate token mode
+            setMode('token');
             const i = prompt('Emoji:', '⚔️') || '⚔️';
             const c = prompt('Color:', '#e74c3c') || '#e74c3c';
             addToken(c, i);
         }
 
-        function clearTokens() {
-            if (confirm('Clear all tokens?')) {
-                tokens = [];
-                draw();
-            }
-        }
-
-        // Zoom/Pan
+        // Zoom
         function setZoom(v) {
             zoom = v / 100;
             document.getElementById('zoomValue').textContent = Math.round(v) + '%';
@@ -1050,21 +1193,17 @@
             const mx = (e.clientX - rect.left - panX) / zoom;
             const my = (e.clientY - rect.top - panY) / zoom;
 
-            // Fog mode - only paint fog
             if (currentMode === 'fog') {
                 isDrawing = true;
                 applyFog(mx, my);
                 return;
             }
 
-            // Token mode - only interact with tokens
-            if (currentMode === 'token') {
+            if (currentMode === 'token' && currentPlayer) {
                 dragToken = tokens.find(t => {
                     const dx = mx - t.x;
                     const dy = my - t.y;
-                    const near = Math.sqrt(dx*dx + dy*dy) < 30;
-                    if (currentPlayer && t.owner) return near && t.owner === currentPlayer;
-                    return near && (!t.owner || isDM);
+                    return Math.sqrt(dx*dx + dy*dy) < 30;
                 });
 
                 if (dragToken) {
@@ -1073,7 +1212,6 @@
                 return;
             }
 
-            // Map mode - pan the view
             if (currentMode === 'map') {
                 lastX = e.clientX;
                 lastY = e.clientY;
@@ -1087,13 +1225,11 @@
             const mx = (e.clientX - rect.left - panX) / zoom;
             const my = (e.clientY - rect.top - panY) / zoom;
 
-            // Fog mode
             if (currentMode === 'fog') {
                 applyFog(mx, my);
                 return;
             }
 
-            // Token mode - drag token
             if (currentMode === 'token' && dragToken) {
                 dragToken.x = mx;
                 dragToken.y = my;
@@ -1101,7 +1237,6 @@
                 return;
             }
 
-            // Map mode - pan
             if (currentMode === 'map') {
                 panX += e.clientX - lastX;
                 panY += e.clientY - lastY;
@@ -1116,18 +1251,46 @@
             dragToken = null;
         });
 
-        function applyFog(x, y) {
-            const reveal = document.getElementById('revealMode').checked;
-            if (reveal) {
-                fogCtx.globalCompositeOperation = 'destination-out';
+        canvas.addEventListener('dragover', e => e.preventDefault());
+        canvas.addEventListener('drop', e => {
+            e.preventDefault();
+            try {
+                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                if (data.type === 'player') {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = (e.clientX - rect.left - panX) / zoom;
+                    const y = (e.clientY - rect.top - panY) / zoom;
+                    tokens.push({ x, y, color: data.token.color, icon: data.token.icon, owner: currentPlayer });
+                    draw();
+                }
+            } catch {}
+        });
+
+        // DM
+        function openDM() {
+            document.getElementById('dmModal').classList.add('active');
+        }
+
+        function closeDMModal() {
+            document.getElementById('dmModal').classList.remove('active');
+            document.getElementById('dmError').classList.remove('show');
+        }
+
+        function dmLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('dmUser').value;
+            const pass = document.getElementById('dmPass').value;
+            if (user === 'Wizard' && pass === 'Wizard') {
+                isDM = true;
+                closeDMModal();
+                document.getElementById('dmPanel').classList.add('open');
             } else {
-                fogCtx.globalCompositeOperation = 'source-over';
-                fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
+                document.getElementById('dmError').classList.add('show');
             }
-            fogCtx.beginPath();
-            fogCtx.arc(x, y, fogSize, 0, Math.PI * 2);
-            fogCtx.fill();
-            draw();
+        }
+
+        function closeDM() {
+            document.getElementById('dmPanel').classList.remove('open');
         }
 
         // Player
@@ -1176,37 +1339,12 @@
             e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'player', token: t }));
         }
 
-        canvas.addEventListener('dragover', e => e.preventDefault());
-        canvas.addEventListener('drop', e => {
-            e.preventDefault();
-            try {
-                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-                if (data.type === 'player') {
-                    const rect = canvas.getBoundingClientRect();
-                    const x = (e.clientX - rect.left - panX) / zoom;
-                    const y = (e.clientY - rect.top - panY) / zoom;
-                    tokens.push({ x, y, color: data.token.color, icon: data.token.icon, owner: currentPlayer });
-                    draw();
-                }
-            } catch {}
-        });
-
-        function uploadToken(e) {
-            if (!currentPlayer) { showPlayerLogin(); return; }
-            // For now, just use emoji
-            createPlayerToken();
-        }
-
         // Save/Load
         function saveGame() {
-            const data = {
-                tokens,
-                map: mapImage ? mapImage.src : null,
-                fog: fogCanvas.toDataURL(),
-                zoom,
-                panX,
-                panY
-            };
+            const data = { tokens, gridCells: {}, fog: fogCanvas.toDataURL(), zoom, panX, panY };
+            for (let key in gridCells) {
+                data.gridCells[key] = gridCells[key].toDataURL();
+            }
             const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1229,34 +1367,39 @@
                 zoom = data.zoom || 1;
                 panX = data.panX || 0;
                 panY = data.panY || 0;
-                document.getElementById('zoomSlider').value = zoom * 100;
-                document.getElementById('zoomValue').textContent = Math.round(zoom * 100) + '%';
                 
-                if (data.map) {
+                gridCells = {};
+                for (let key in data.gridCells) {
                     const img = new Image();
                     img.onload = () => {
-                        mapImage = img;
+                        const cellCanvas = document.createElement('canvas');
+                        cellCanvas.width = CELL_SIZE;
+                        cellCanvas.height = CELL_SIZE;
+                        const cellCtx = cellCanvas.getContext('2d');
+                        cellCtx.drawImage(img, 0, 0);
+                        gridCells[key] = cellCanvas;
                         draw();
                     };
-                    img.src = data.map;
+                    img.src = data.gridCells[key];
                 }
                 
                 if (data.fog) {
                     const img = new Image();
                     img.onload = () => {
                         fogCtx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
-                        fogCtx.drawImage(img, 0, 0);
+                        fogCtx.drawImage(img, 0, 0, fogCanvas.width, fogCanvas.height);
                         draw();
                     };
                     img.src = data.fog;
                 }
                 
+                document.getElementById('zoomSlider').value = zoom * 100;
+                document.getElementById('zoomValue').textContent = Math.round(zoom * 100) + '%';
                 draw();
             };
             reader.readAsText(file);
         }
 
-        // Init
         init();
     </script>
 </body>
