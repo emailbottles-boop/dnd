@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+a<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -227,6 +227,11 @@
         .main-container {
             display: flex;
             height: calc(100vh - 60px);
+            position: relative;
+        }
+
+        .main-container.with-player-bar {
+            height: calc(100vh - 60px - 80px);
         }
 
         /* Player View */
@@ -414,9 +419,11 @@
         }
 
         #tabletopCanvas {
+            display: block;
             width: 100%;
             height: 100%;
             cursor: grab;
+            object-fit: contain;
         }
 
         #tabletopCanvas:active {
@@ -1035,7 +1042,7 @@
         <div class="nav-actions">
             <button class="icon-btn" onclick="saveSession()" title="Save Session">💾</button>
             <button class="icon-btn" onclick="loadSession()" title="Load Session">📂</button>
-            <button class="dm-btn" onclick="showLogin()">🎭 DM Controls</button>
+            <button class="dm-btn" onclick="openDMPanel()">🎭 DM Controls</button>
         </div>
     </nav>
 
@@ -1442,6 +1449,7 @@
             document.getElementById('playerTokenBar').classList.add('show');
             document.getElementById('playerLoginBtn').classList.add('logged-in');
             document.getElementById('playerLoginBtn').textContent = '✓';
+            document.querySelector('.main-container').classList.add('with-player-bar');
 
             closePlayerLogin();
             renderPlayerTokens();
@@ -1457,6 +1465,7 @@
             document.getElementById('playerLoginBtn').classList.remove('logged-in');
             document.getElementById('playerLoginBtn').textContent = '👤';
             document.getElementById('myTokens').innerHTML = '';
+            document.querySelector('.main-container').classList.remove('with-player-bar');
         }
 
         function getRandomEmoji() {
@@ -1589,8 +1598,17 @@
             document.getElementById('sessionName').textContent = session.name;
             tokens = session.tokens || [];
             zoom = session.zoom || 1;
-            panX = session.panX || 0;
-            panY = session.panY || 0;
+            panX = session.panX !== undefined ? session.panX : 0;
+            panY = session.panY !== undefined ? session.panY : 0;
+            
+            // If no saved pan position, center it
+            if (session.panX === undefined || session.panY === undefined) {
+                const canvasWrapper = document.querySelector('.canvas-area');
+                if (canvasWrapper) {
+                    panX = (canvasWrapper.offsetWidth - tableCanvas.width * zoom) / 2;
+                    panY = (canvasWrapper.offsetHeight - tableCanvas.height * zoom) / 2;
+                }
+            }
             
             // Load map
             if (session.map) {
@@ -1763,6 +1781,13 @@
 
             fogCtx.fillStyle = 'rgba(0, 0, 0, 0.9)';
             fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
+
+            // Center the canvas view
+            const canvasWrapper = document.querySelector('.canvas-area');
+            if (canvasWrapper) {
+                panX = (canvasWrapper.offsetWidth - tableCanvas.width) / 2;
+                panY = (canvasWrapper.offsetHeight - tableCanvas.height) / 2;
+            }
 
             // Create default session
             const defaultSession = createSession('The Fractured Sky');
