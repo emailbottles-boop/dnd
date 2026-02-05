@@ -1027,25 +1027,27 @@
             ctx.translate(panX, panY);
             ctx.scale(zoom, zoom);
 
-            // Draw 3x3 grid (9 cells total)
-            // Layout:
-            // [-1,-1] [0,-1] [1,-1]
-            // [-1, 0] [0, 0] [1, 0]
-            // [-1, 1] [0, 1] [1, 1]
+            // Draw 3x3 grid centered at origin
+            // The grid is ALWAYS 3x3 (9 cells) arranged like:
+            // [0,0] [1,0] [2,0]
+            // [0,1] [1,1] [2,1]
+            // [0,2] [1,2] [2,2]
             
-            for (let gy = -1; gy <= 1; gy++) {
-                for (let gx = -1; gx <= 1; gx++) {
-                    const absoluteX = currentGridX + gx;
-                    const absoluteY = currentGridY + gy;
-                    const x = gx * GRID_SIZE;
-                    const y = gy * GRID_SIZE;
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const x = col * GRID_SIZE;
+                    const y = row * GRID_SIZE;
+                    
+                    // Calculate which grid cell this represents based on current position
+                    const absoluteX = currentGridX + (col - 1);
+                    const absoluteY = currentGridY + (row - 1);
+                    const key = `${absoluteX},${absoluteY}`;
                     
                     // Cell background
                     ctx.fillStyle = '#1a1f2e';
                     ctx.fillRect(x, y, GRID_SIZE, GRID_SIZE);
                     
-                    // Cell content from gridCells
-                    const key = `${absoluteX},${absoluteY}`;
+                    // Cell content
                     if (gridCells[key]) {
                         ctx.drawImage(gridCells[key], x, y, GRID_SIZE, GRID_SIZE);
                     }
@@ -1055,8 +1057,8 @@
                     ctx.lineWidth = 2;
                     ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
                     
-                    // Current center cell highlight (where DM is building)
-                    if (gx === 0 && gy === 0 && isDM) {
+                    // Highlight center cell (where DM is building)
+                    if (col === 1 && row === 1 && isDM) {
                         ctx.strokeStyle = '#8b5cf6';
                         ctx.lineWidth = 4;
                         ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
@@ -1069,16 +1071,6 @@
                         ctx.textAlign = 'left';
                         ctx.textBaseline = 'top';
                         ctx.fillText('Building Here', x + 10, y + 12);
-                    }
-                    
-                    // Cell position labels for debugging (optional)
-                    if (isDM) {
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-                        ctx.font = '12px Inter';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        const cellNum = (gy + 1) * 3 + (gx + 1) + 1;
-                        ctx.fillText(`Cell ${cellNum}`, x + GRID_SIZE / 2, y + GRID_SIZE / 2);
                     }
                 }
             }
@@ -1106,11 +1098,11 @@
 
             ctx.restore();
 
-            // Fog layer
+            // Fog layer over the entire 3x3 grid
             ctx.save();
             ctx.translate(panX, panY);
             ctx.scale(zoom, zoom);
-            ctx.drawImage(fogCanvas, -GRID_SIZE, -GRID_SIZE, GRID_SIZE * 3, GRID_SIZE * 3);
+            ctx.drawImage(fogCanvas, 0, 0, GRID_SIZE * 3, GRID_SIZE * 3);
             ctx.restore();
         }
 
