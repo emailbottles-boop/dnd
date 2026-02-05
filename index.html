@@ -119,19 +119,48 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .iframe-container {
+        .window-placeholder {
             width: 100%;
-            height: 600px;
+            min-height: 200px;
             border-radius: 8px;
-            overflow: hidden;
             background: rgba(0, 0, 0, 0.2);
-            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
+            padding: 40px;
+            text-align: center;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
         }
 
-        .iframe-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .window-placeholder h3 {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .window-placeholder p {
+            opacity: 0.7;
+            max-width: 500px;
+        }
+
+        .window-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .window-status.open {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .window-status.closed {
+            background: rgba(244, 67, 54, 0.3);
         }
 
         .transfer-section {
@@ -260,16 +289,22 @@
         <div class="tool-section">
             <div class="tool-header">
                 <h2>
-                    <span class="status-indicator"></span>
+                    <span class="status-indicator" id="inkarnateIndicator"></span>
                     Inkarnate Map Builder
                 </h2>
                 <div class="tool-controls">
-                    <a href="https://inkarnate.com/maps/" target="_blank" class="btn btn-primary">Open in New Tab</a>
-                    <button onclick="refreshInkarnate()" class="btn btn-secondary">Refresh</button>
+                    <button onclick="openInkarnate()" class="btn btn-primary">🚀 Launch Inkarnate</button>
+                    <button onclick="focusInkarnate()" class="btn btn-secondary">🔍 Focus Window</button>
+                    <button onclick="closeInkarnate()" class="btn btn-warning">✖ Close</button>
                 </div>
             </div>
-            <div class="iframe-container">
-                <iframe id="inkarnateFrame" src="https://inkarnate.com/maps/" title="Inkarnate Map Builder"></iframe>
+            <div class="window-placeholder">
+                <h3>Ready to create maps!</h3>
+                <p>Click "Launch Inkarnate" to open the map builder in a new window. Create your maps there, export them as images, and transfer them to Owlbear Rodeo below.</p>
+                <div class="window-status closed" id="inkarnateStatus">
+                    <span>⚫</span>
+                    <span>Window Closed</span>
+                </div>
             </div>
         </div>
 
@@ -317,34 +352,135 @@
         <div class="tool-section">
             <div class="tool-header">
                 <h2>
-                    <span class="status-indicator"></span>
+                    <span class="status-indicator" id="owlbearIndicator"></span>
                     Owlbear Rodeo Virtual Tabletop
                 </h2>
                 <div class="tool-controls">
-                    <a href="https://www.owlbear.rodeo/" target="_blank" class="btn btn-primary">Open in New Tab</a>
-                    <button onclick="refreshOwlbear()" class="btn btn-secondary">Refresh</button>
-                    <button onclick="createNewRoom()" class="btn btn-warning">Create New Room</button>
+                    <button onclick="openOwlbear()" class="btn btn-primary">🚀 Launch Owlbear Rodeo</button>
+                    <button onclick="createNewRoom()" class="btn btn-primary">➕ New Room</button>
+                    <button onclick="focusOwlbear()" class="btn btn-secondary">🔍 Focus Window</button>
+                    <button onclick="closeOwlbear()" class="btn btn-warning">✖ Close</button>
                 </div>
             </div>
-            <div class="iframe-container">
-                <iframe id="owlbearFrame" src="https://www.owlbear.rodeo/" title="Owlbear Rodeo"></iframe>
+            <div class="window-placeholder">
+                <h3>Ready for gameplay!</h3>
+                <p>Click "Launch Owlbear Rodeo" to open your virtual tabletop. Import your Inkarnate maps by dragging the image files into the Owlbear Rodeo window.</p>
+                <div class="window-status closed" id="owlbearStatus">
+                    <span>⚫</span>
+                    <span>Window Closed</span>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        function refreshInkarnate() {
-            const frame = document.getElementById('inkarnateFrame');
-            frame.src = frame.src;
+        let inkarnateWindow = null;
+        let owlbearWindow = null;
+
+        // Check window status periodically
+        setInterval(checkWindowStatus, 1000);
+
+        function openInkarnate() {
+            if (inkarnateWindow && !inkarnateWindow.closed) {
+                inkarnateWindow.focus();
+                return;
+            }
+            
+            inkarnateWindow = window.open(
+                'https://inkarnate.com/maps/',
+                'InkarnateWindow',
+                'width=1400,height=900,menubar=yes,toolbar=yes,location=yes,status=yes,scrollbars=yes,resizable=yes'
+            );
+            
+            updateStatus('inkarnate', true);
         }
 
-        function refreshOwlbear() {
-            const frame = document.getElementById('owlbearFrame');
-            frame.src = frame.src;
+        function openOwlbear() {
+            if (owlbearWindow && !owlbearWindow.closed) {
+                owlbearWindow.focus();
+                return;
+            }
+            
+            owlbearWindow = window.open(
+                'https://www.owlbear.rodeo/',
+                'OwlbearWindow',
+                'width=1400,height=900,menubar=yes,toolbar=yes,location=yes,status=yes,scrollbars=yes,resizable=yes'
+            );
+            
+            updateStatus('owlbear', true);
+        }
+
+        function focusInkarnate() {
+            if (inkarnateWindow && !inkarnateWindow.closed) {
+                inkarnateWindow.focus();
+            } else {
+                alert('Inkarnate window is not open. Click "Launch Inkarnate" first.');
+            }
+        }
+
+        function focusOwlbear() {
+            if (owlbearWindow && !owlbearWindow.closed) {
+                owlbearWindow.focus();
+            } else {
+                alert('Owlbear Rodeo window is not open. Click "Launch Owlbear Rodeo" first.');
+            }
+        }
+
+        function closeInkarnate() {
+            if (inkarnateWindow && !inkarnateWindow.closed) {
+                inkarnateWindow.close();
+                inkarnateWindow = null;
+                updateStatus('inkarnate', false);
+            }
+        }
+
+        function closeOwlbear() {
+            if (owlbearWindow && !owlbearWindow.closed) {
+                owlbearWindow.close();
+                owlbearWindow = null;
+                updateStatus('owlbear', false);
+            }
         }
 
         function createNewRoom() {
-            window.open('https://www.owlbear.rodeo/', '_blank');
+            window.open(
+                'https://www.owlbear.rodeo/',
+                '_blank',
+                'width=1400,height=900,menubar=yes,toolbar=yes,location=yes,status=yes,scrollbars=yes,resizable=yes'
+            );
+        }
+
+        function checkWindowStatus() {
+            // Check Inkarnate
+            if (inkarnateWindow && inkarnateWindow.closed) {
+                inkarnateWindow = null;
+                updateStatus('inkarnate', false);
+            } else if (inkarnateWindow && !inkarnateWindow.closed) {
+                updateStatus('inkarnate', true);
+            }
+
+            // Check Owlbear
+            if (owlbearWindow && owlbearWindow.closed) {
+                owlbearWindow = null;
+                updateStatus('owlbear', false);
+            } else if (owlbearWindow && !owlbearWindow.closed) {
+                updateStatus('owlbear', true);
+            }
+        }
+
+        function updateStatus(tool, isOpen) {
+            const statusDiv = document.getElementById(tool + 'Status');
+            const indicator = document.getElementById(tool + 'Indicator');
+            
+            if (isOpen) {
+                statusDiv.className = 'window-status open';
+                statusDiv.innerHTML = '<span>🟢</span><span>Window Open</span>';
+                if (indicator) indicator.style.background = '#4CAF50';
+            } else {
+                statusDiv.className = 'window-status closed';
+                statusDiv.innerHTML = '<span>⚫</span><span>Window Closed</span>';
+                if (indicator) indicator.style.background = '#f44336';
+            }
         }
 
         function handleMapUpload(event) {
@@ -353,7 +489,7 @@
             
             if (file) {
                 if (file.type.startsWith('image/')) {
-                    statusDiv.textContent = `✅ ${file.name} ready to use! Drag this file into Owlbear Rodeo below.`;
+                    statusDiv.textContent = `✅ ${file.name} ready! Save this file and drag it into the Owlbear Rodeo window.`;
                     statusDiv.style.color = '#4CAF50';
                     
                     // Store in browser for easy access
@@ -370,13 +506,26 @@
             }
         }
 
-        // Check for previously uploaded map
+        // Initialize status indicators
         window.addEventListener('load', function() {
+            updateStatus('inkarnate', false);
+            updateStatus('owlbear', false);
+            
             const lastMap = localStorage.getItem('lastUploadedMapName');
             if (lastMap) {
                 const statusDiv = document.getElementById('uploadStatus');
                 statusDiv.textContent = `Last uploaded: ${lastMap}`;
                 statusDiv.style.color = '#2196F3';
+            }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (inkarnateWindow && !inkarnateWindow.closed) {
+                // Windows will remain open
+            }
+            if (owlbearWindow && !owlbearWindow.closed) {
+                // Windows will remain open
             }
         });
     </script>
