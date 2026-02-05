@@ -201,12 +201,24 @@
             border-radius: 10px;
             padding: 1rem;
             margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .section.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            background: rgba(139, 92, 246, 0.05);
         }
 
         .section h3 {
             margin-bottom: 0.75rem;
             color: var(--gold);
             font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .section.active h3 {
+            color: var(--accent);
         }
 
         .tool-grid {
@@ -532,7 +544,7 @@
                 </div>
 
                 <!-- Map Builder -->
-                <div class="section">
+                <div class="section" id="mapSection">
                     <h3>🗺️ Map Builder</h3>
                     <div class="tool-grid">
                         <div class="tool-btn active" onclick="setTool('brush')" id="brushBtn">🖌️<br>Brush</div>
@@ -582,7 +594,7 @@
                 </div>
 
                 <!-- Fog of War -->
-                <div class="section">
+                <div class="section" id="fogSection">
                     <h3>🌫️ Fog of War</h3>
                     <div class="control-row">
                         <label>Brush Size:</label>
@@ -601,7 +613,7 @@
                 </div>
 
                 <!-- Tokens -->
-                <div class="section">
+                <div class="section" id="tokenSection">
                     <h3>🎲 Tokens</h3>
                     <details>
                         <summary style="cursor: pointer; color: var(--gold); margin: 0.5rem 0;">Quick Add (12)</summary>
@@ -703,12 +715,57 @@
         let stamp = '🌲';
         let fogSize = 60;
         let fogMode = false;
+        let tokenMode = false;
+        let currentMode = 'map'; // 'map', 'fog', or 'token'
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
         let dragToken = null;
         let mapImage = null;
         let playerTokens = [];
+
+        // Mode Management
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Remove all active states
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            // Highlight active section
+            if (mode === 'map') {
+                const mapSection = document.getElementById('mapSection');
+                if (mapSection) mapSection.classList.add('active');
+                fogMode = false;
+                tokenMode = false;
+                canvas.style.cursor = 'grab';
+                updateFogButton();
+            } else if (mode === 'fog') {
+                const fogSection = document.getElementById('fogSection');
+                if (fogSection) fogSection.classList.add('active');
+                fogMode = true;
+                tokenMode = false;
+                canvas.style.cursor = 'crosshair';
+                updateFogButton();
+            } else if (mode === 'token') {
+                const tokenSection = document.getElementById('tokensSection');
+                if (tokenSection) tokenSection.classList.add('active');
+                fogMode = false;
+                tokenMode = true;
+                canvas.style.cursor = 'default';
+                updateFogButton();
+            }
+        }
+
+        function updateFogButton() {
+            const btn = document.getElementById('fogBtn');
+            if (fogMode && currentMode === 'fog') {
+                btn.textContent = '🌫️ Fog Mode Active';
+                btn.classList.add('btn-primary');
+            } else {
+                btn.textContent = 'Enable Fog Mode';
+                btn.classList.remove('btn-primary');
+            }
+        }
 
         // Canvas
         const canvas = document.getElementById('mainCanvas');
@@ -731,6 +788,9 @@
             const container = canvas.parentElement;
             panX = (container.offsetWidth - canvas.width) / 2;
             panY = (container.offsetHeight - canvas.height) / 2;
+            
+            // Set initial mode
+            setMode('map');
             
             draw();
         }
@@ -826,6 +886,7 @@
         // Map Tools
         function setTool(t) {
             tool = t;
+            setMode('map'); // Activate map mode when selecting tools
             document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(t + 'Btn').classList.add('active');
         }
@@ -939,16 +1000,13 @@
         }
 
         function toggleFog() {
-            fogMode = !fogMode;
-            const btn = document.getElementById('fogBtn');
-            if (fogMode) {
-                btn.textContent = 'Fog Active';
-                btn.classList.add('btn-primary');
-                canvas.style.cursor = 'crosshair';
-            } else {
-                btn.textContent = 'Enable Fog';
-                btn.classList.remove('btn-primary');
+            if (currentMode === 'fog') {
+                // Turn off fog mode
+                setMode('map');
                 canvas.style.cursor = 'grab';
+            } else {
+                // Turn on fog mode
+                setMode('fog');
             }
         }
 
@@ -960,11 +1018,13 @@
 
         // Tokens
         function addToken(c, i) {
+            setMode('token'); // Activate token mode when adding tokens
             tokens.push({ x: canvas.width / 2, y: canvas.height / 2, color: c, icon: i, owner: null });
             draw();
         }
 
         function addCustomToken() {
+            setMode('token'); // Activate token mode
             const i = prompt('Emoji:', '⚔️') || '⚔️';
             const c = prompt('Color:', '#e74c3c') || '#e74c3c';
             addToken(c, i);
@@ -990,23 +1050,31 @@
             const mx = (e.clientX - rect.left - panX) / zoom;
             const my = (e.clientY - rect.top - panY) / zoom;
 
-            if (fogMode) {
+            // Fog mode - only paint fog
+            if (currentMode === 'fog') {
                 isDrawing = true;
                 applyFog(mx, my);
                 return;
             }
 
-            dragToken = tokens.find(t => {
-                const dx = mx - t.x;
-                const dy = my - t.y;
-                const near = Math.sqrt(dx*dx + dy*dy) < 30;
-                if (currentPlayer && t.owner) return near && t.owner === currentPlayer;
-                return near && (!t.owner || isDM);
-            });
+            // Token mode - only interact with tokens
+            if (currentMode === 'token') {
+                dragToken = tokens.find(t => {
+                    const dx = mx - t.x;
+                    const dy = my - t.y;
+                    const near = Math.sqrt(dx*dx + dy*dy) < 30;
+                    if (currentPlayer && t.owner) return near && t.owner === currentPlayer;
+                    return near && (!t.owner || isDM);
+                });
 
-            if (dragToken) {
-                isDrawing = true;
-            } else {
+                if (dragToken) {
+                    isDrawing = true;
+                }
+                return;
+            }
+
+            // Map mode - pan the view
+            if (currentMode === 'map') {
                 lastX = e.clientX;
                 lastY = e.clientY;
                 isDrawing = true;
@@ -1019,16 +1087,22 @@
             const mx = (e.clientX - rect.left - panX) / zoom;
             const my = (e.clientY - rect.top - panY) / zoom;
 
-            if (fogMode) {
+            // Fog mode
+            if (currentMode === 'fog') {
                 applyFog(mx, my);
                 return;
             }
 
-            if (dragToken) {
+            // Token mode - drag token
+            if (currentMode === 'token' && dragToken) {
                 dragToken.x = mx;
                 dragToken.y = my;
                 draw();
-            } else {
+                return;
+            }
+
+            // Map mode - pan
+            if (currentMode === 'map') {
                 panX += e.clientX - lastX;
                 panY += e.clientY - lastY;
                 lastX = e.clientX;
