@@ -250,11 +250,12 @@
             background: var(--bg-card);
             border-left: 1px solid var(--border);
             overflow-y: auto;
-            display: none;
+            transform: translateX(100%);
+            transition: transform 0.3s;
         }
 
         .dm-panel.open {
-            display: block;
+            transform: translateX(0);
         }
 
         .dm-header {
@@ -618,25 +619,104 @@
 
         .player-login-btn {
             position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            width: 50px;
-            height: 50px;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-            border: none;
+            border: 3px solid var(--gold);
             border-radius: 50%;
             color: white;
-            font-size: 1.5rem;
+            font-size: 2rem;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6), 0 0 0 0 rgba(139, 92, 246, 0.7);
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6), 0 0 0 0 rgba(139, 92, 246, 0.7);
+            }
+            50% {
+                box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6), 0 0 0 15px rgba(139, 92, 246, 0);
+            }
         }
 
         .player-login-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.15);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.8);
+        }
+
+        .player-login-btn::before {
+            content: 'PLAYER LOGIN';
+            position: absolute;
+            top: -35px;
+            right: 0;
+            background: var(--bg-card);
+            color: var(--text);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .player-login-btn:hover::before {
+            opacity: 1;
+        }
+
+        /* Initial Tooltip */
+        .player-tooltip {
+            position: fixed;
+            bottom: 2rem;
+            right: 9rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 99;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.6);
+            animation: bounce 2s infinite;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .player-tooltip.hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+        }
+
+        .player-tooltip::after {
+            content: '';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid var(--accent-secondary);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(-10px);
+            }
         }
 
         ::-webkit-scrollbar {
@@ -946,6 +1026,11 @@
             <button class="btn btn-small" onclick="createPlayerToken()">+ Token</button>
             <button class="btn btn-small" onclick="playerLogout()">Logout</button>
         </div>
+    </div>
+
+    <!-- Player Tooltip -->
+    <div class="player-tooltip" id="playerTooltip">
+        👈 Create Player Token
     </div>
 
     <button class="player-login-btn" onclick="showPlayerLogin()" id="playerBtn">👤</button>
@@ -1494,6 +1579,12 @@
             
             playerRequests.push({ name: name, timestamp: Date.now() });
             document.getElementById('playerSuccess').classList.add('show');
+            
+            // Hide the tooltip since player has submitted request
+            const tooltip = document.getElementById('playerTooltip');
+            if (tooltip) {
+                tooltip.classList.add('hidden');
+            }
             
             if (isDM) {
                 renderPlayerRequests();
