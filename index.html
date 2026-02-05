@@ -1,12 +1,12 @@
-a<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mystic Tabletop - Virtual TTRPG</title>
+    <title>The Fractured Sky - Virtual Tabletop</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,430 +15,164 @@ a<!DOCTYPE html>
         }
 
         :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-tertiary: #1f2937;
-            --accent-primary: #8b5cf6;
+            --bg-dark: #0a0e1a;
+            --bg-card: #151928;
+            --bg-hover: #1f2537;
+            --accent: #8b5cf6;
             --accent-secondary: #ec4899;
-            --accent-gold: #fbbf24;
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --border-subtle: rgba(139, 92, 246, 0.1);
-            --border-focus: rgba(139, 92, 246, 0.3);
-            --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.15);
-            --shadow-deep: 0 10px 40px rgba(0, 0, 0, 0.5);
+            --gold: #fbbf24;
+            --text: #e5e7eb;
+            --text-dim: #9ca3af;
+            --border: rgba(139, 92, 246, 0.2);
         }
 
         body {
-            font-family: 'Raleway', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
             overflow: hidden;
             height: 100vh;
-            width: 100vw;
         }
 
-        /* Refined Background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Navigation */
-        .nav-bar {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            box-shadow: var(--shadow-deep);
-            position: relative;
-            z-index: 100;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-center {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .tab-container {
-            display: flex;
-            gap: 0.5rem;
-            flex: 1;
-            overflow-x: auto;
-            padding: 0.25rem 0;
-        }
-
-        .tab-container::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .tab-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .tab-container::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
-            border-radius: 2px;
-        }
-
-        .tab {
-            padding: 0.5rem 1rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-        }
-
-        .tab:hover {
-            background: var(--bg-primary);
-            border-color: var(--border-focus);
-            color: var(--text-primary);
-        }
-
-        .tab.active {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
-            border-color: var(--accent-primary);
-            color: var(--text-primary);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .tab-close {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .tab-close:hover {
-            background: var(--accent-secondary);
-            color: white;
-        }
-
-        .add-tab-btn {
-            padding: 0.5rem 1rem;
-            background: transparent;
-            border: 1px dashed var(--border-focus);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .add-tab-btn:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 0.75rem;
-            align-items: center;
-        }
-
-        .icon-btn {
-            width: 36px;
-            height: 36px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-btn:hover {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: white;
-            box-shadow: var(--shadow-glow);
-        }
-
-        .dm-btn {
-            padding: 0.5rem 1.25rem;
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 0.875rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .dm-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
-        }
-
-        /* Main Container */
-        .main-container {
-            display: flex;
-            height: calc(100vh - 60px);
-            position: relative;
-        }
-
-        .main-container.with-player-bar {
-            height: calc(100vh - 60px - 80px);
-        }
-
-        /* Player View */
-        .player-view {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            position: relative;
-        }
-
-        /* Atmospheric particles */
-        .player-view::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            animation: ambientPulse 8s ease-in-out infinite;
-        }
-
-        @keyframes ambientPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        .tabletop-wrapper {
-            flex: 1;
-            background: linear-gradient(135deg, rgba(22, 27, 34, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%);
-            border-radius: 16px;
-            border: 1px solid var(--border-focus);
-            overflow: hidden;
-            box-shadow: 
-                var(--shadow-deep),
-                0 0 60px rgba(139, 92, 246, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .tabletop-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            background: linear-gradient(180deg, 
-                rgba(139, 92, 246, 0.08) 0%, 
-                transparent 100%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .tabletop-controls {
+        /* Header */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
             padding: 1rem 1.5rem;
-            background: linear-gradient(135deg, 
-                rgba(31, 41, 55, 0.8) 0%, 
-                rgba(22, 27, 34, 0.9) 100%);
-            border-bottom: 1px solid var(--border-focus);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
-        .session-title {
+        .title {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-primary) 50%, var(--accent-secondary) 100%);
+            background: linear-gradient(135deg, var(--gold), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 1px;
-            text-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
-            position: relative;
         }
 
-        .session-title::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--accent-gold) 50%, 
-                transparent 100%);
-            opacity: 0.5;
-        }
-
-        .control-group {
+        .header-actions {
             display: flex;
-            align-items: center;
             gap: 0.75rem;
         }
 
-        .control-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
+        .btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
             font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border: none;
+            color: white;
+        }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+
+        .main-area {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabletop {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .tabletop-header {
+            padding: 1rem 1.5rem;
+            background: var(--bg-hover);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--gold), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .slider {
-            -webkit-appearance: none;
-            appearance: none;
             width: 120px;
             height: 4px;
-            background: var(--bg-primary);
+            background: var(--bg-dark);
             border-radius: 2px;
             outline: none;
+            -webkit-appearance: none;
         }
 
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
             width: 14px;
             height: 14px;
-            background: var(--accent-primary);
+            background: var(--accent);
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .slider::-webkit-slider-thumb:hover {
-            width: 16px;
-            height: 16px;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
-        }
-
-        .canvas-area {
+        .canvas-container {
             flex: 1;
             position: relative;
-            background: 
-                radial-gradient(circle at center, rgba(22, 27, 34, 0.7) 0%, rgba(13, 17, 23, 1) 100%),
-                linear-gradient(135deg, rgba(139, 92, 246, 0.02) 0%, rgba(236, 72, 153, 0.02) 100%);
-            overflow: hidden;
+            background: radial-gradient(circle at center, #1a1f2e 0%, var(--bg-dark) 100%);
         }
 
-        .canvas-area::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            right: -50%;
-            bottom: -50%;
-            background: 
-                radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 30%),
-                radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 30%);
-            animation: slowRotate 60s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes slowRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .canvas-area::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                linear-gradient(to bottom, 
-                    transparent 0%, 
-                    rgba(251, 191, 36, 0.03) 50%, 
-                    transparent 100%);
-            pointer-events: none;
-            animation: ambientSweep 10s ease-in-out infinite;
-        }
-
-        @keyframes ambientSweep {
-            0%, 100% { opacity: 0.3; transform: translateY(0); }
-            50% { opacity: 0.6; transform: translateY(-20px); }
-        }
-
-        #tabletopCanvas {
+        canvas {
             display: block;
             width: 100%;
             height: 100%;
             cursor: grab;
-            object-fit: contain;
         }
 
-        #tabletopCanvas:active {
+        canvas:active {
             cursor: grabbing;
         }
 
         /* DM Panel */
         .dm-panel {
-            width: 420px;
-            background: var(--bg-secondary);
-            border-left: 1px solid var(--border-subtle);
+            width: 400px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
             overflow-y: auto;
             transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
         }
 
         .dm-panel.open {
@@ -448,157 +182,62 @@ a<!DOCTYPE html>
         .dm-header {
             position: sticky;
             top: 0;
-            background: var(--bg-tertiary);
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-hover);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 10;
-            backdrop-filter: blur(10px);
-        }
-
-        .dm-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-        }
-
-        .close-btn {
-            width: 30px;
-            height: 30px;
-            background: transparent;
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            color: var(--text-secondary);
-            font-size: 1.25rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-btn:hover {
-            background: var(--accent-secondary);
-            border-color: var(--accent-secondary);
-            color: white;
         }
 
         .dm-content {
-            padding: 1.25rem;
+            padding: 1rem;
         }
 
         .section {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 1.25rem;
+            padding: 1rem;
             margin-bottom: 1rem;
         }
 
-        .section-header {
-            font-family: 'Playfair Display', serif;
+        .section h3 {
+            margin-bottom: 0.75rem;
+            color: var(--gold);
             font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--accent-gold);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        /* Tool Grid */
         .tool-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .tool-card {
-            aspect-ratio: 1;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.25rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .tool-card:hover {
-            background: var(--bg-primary);
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-
-        .tool-card.active {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .tool-icon {
-            font-size: 1.5rem;
-        }
-
-        /* Asset Picker */
-        .asset-picker {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 0.5rem;
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 0.5rem;
-            background: var(--bg-secondary);
-            border-radius: 8px;
             margin: 0.75rem 0;
         }
 
-        .asset-btn {
-            aspect-ratio: 1;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
+        .tool-btn {
+            padding: 0.75rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
             border-radius: 6px;
-            font-size: 1.75rem;
             cursor: pointer;
+            text-align: center;
+            font-size: 0.85rem;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .asset-btn:hover {
-            background: var(--bg-primary);
-            border-color: var(--accent-primary);
-            transform: scale(1.1);
+        .tool-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
         }
 
-        .asset-btn.active {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        .tool-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
         }
 
-        /* Canvas */
-        #mapCanvas {
-            width: 100%;
-            height: 300px;
-            border-radius: 8px;
-            border: 1px solid var(--border-subtle);
-            background: white;
-            cursor: crosshair;
-        }
-
-        /* Controls */
         .control-row {
             display: flex;
             align-items: center;
@@ -607,135 +246,69 @@ a<!DOCTYPE html>
         }
 
         .control-row label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
             min-width: 80px;
-            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-dim);
         }
 
-        .control-row input[type="color"] {
+        input[type="color"] {
             width: 50px;
             height: 36px;
-            border: 1px solid var(--border-subtle);
+            border: 1px solid var(--border);
             border-radius: 6px;
             cursor: pointer;
-            background: transparent;
         }
 
-        .control-row .slider {
-            flex: 1;
-        }
-
-        .control-row span {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            min-width: 45px;
-            text-align: right;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 0.65rem 1.25rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
             gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            margin: 0.5rem 0;
         }
 
-        .btn:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
+        .asset-btn {
+            aspect-ratio: 1;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            border: none;
-            color: white;
+        .asset-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-        }
-
-        .btn-success {
-            background: #10b981;
-            border: none;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            border: none;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
+        #mapCanvas {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: crosshair;
         }
 
         .btn-group {
             display: flex;
             gap: 0.5rem;
-            flex-wrap: wrap;
+            margin-top: 0.75rem;
         }
 
-        /* Info Box */
-        .info-box {
-            background: rgba(139, 92, 246, 0.05);
-            border: 1px solid var(--border-focus);
-            border-radius: 8px;
-            padding: 0.75rem;
-            margin: 0.75rem 0;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Checkbox */
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.65rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.875rem;
-        }
-
-        .checkbox-row:hover {
-            background: var(--bg-primary);
-            border-color: var(--border-focus);
-        }
-
-        .checkbox-row input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        /* Login Modal */
-        .login-overlay {
+        /* Modal */
+        .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.8);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -745,106 +318,148 @@ a<!DOCTYPE html>
             transition: opacity 0.3s;
         }
 
-        .login-overlay.active {
+        .modal.active {
             opacity: 1;
             pointer-events: all;
         }
 
-        .login-modal {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-focus);
-            border-radius: 16px;
-            padding: 2.5rem;
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
             max-width: 400px;
             width: 90%;
-            box-shadow: var(--shadow-deep), var(--shadow-glow);
-            transform: scale(0.95);
-            transition: transform 0.3s;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        .login-overlay.active .login-modal {
-            transform: scale(1);
-        }
-
-        .login-header {
+        .modal-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
-        .login-icon {
-            font-size: 3.5rem;
+        .modal-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .login-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.75rem;
-            color: var(--accent-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .login-header p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
         }
 
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-weight: 500;
             margin-bottom: 0.5rem;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            color: var(--text-dim);
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            color: var(--text-primary);
+            padding: 0.75rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
             font-size: 0.95rem;
-            transition: all 0.2s;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            border-color: var(--accent);
         }
 
-        .error-message {
+        .error {
             background: rgba(239, 68, 68, 0.1);
             border: 1px solid #ef4444;
             color: #ef4444;
             padding: 0.75rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            text-align: center;
+            border-radius: 6px;
+            margin: 1rem 0;
             display: none;
         }
 
-        .error-message.show {
+        .error.show {
             display: block;
-            animation: shake 0.4s;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+        /* Player Bar */
+        .player-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            z-index: 50;
+        }
+
+        .player-bar.show {
+            transform: translateY(0);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-hover);
+            border-radius: 8px;
+        }
+
+        .player-tokens {
+            flex: 1;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .token {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid var(--border);
+            cursor: move;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .token:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        .player-login-btn {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-login-btn:hover {
+            transform: scale(1.1);
         }
 
         /* Scrollbar */
@@ -854,215 +469,41 @@ a<!DOCTYPE html>
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
+            background: var(--bg-dark);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
+            background: var(--accent);
             border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-secondary);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .dm-panel {
-                width: 100%;
-                position: fixed;
-                top: 60px;
-                right: 0;
-                height: calc(100vh - 60px);
-                z-index: 200;
-            }
-
-            .nav-center {
-                display: none;
-            }
-        }
-
-        /* Player Token Bar */
-        .player-token-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(180deg, rgba(22, 27, 34, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%);
-            border-top: 1px solid var(--border-focus);
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            z-index: 90;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .player-token-bar.show {
-            transform: translateY(0);
-        }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid var(--border-focus);
-            border-radius: 8px;
-        }
-
-        .player-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            border: 2px solid var(--accent-primary);
-        }
-
-        .player-name {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .my-tokens {
-            flex: 1;
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            padding: 0.25rem 0;
-        }
-
-        .my-tokens::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .player-token {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            border: 2px solid var(--border-subtle);
-            cursor: move;
-            transition: all 0.2s;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .player-token:hover {
-            transform: scale(1.1);
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
-        }
-
-        .player-token.selected {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
-        }
-
-        .token-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .mini-btn {
-            padding: 0.5rem 0.75rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .mini-btn:hover {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: white;
-        }
-
-        /* Player Login Modal */
-        .player-login-btn {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-            transition: all 0.3s;
-            z-index: 95;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .player-login-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.6);
-        }
-
-        .player-login-btn.logged-in {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav-bar">
-        <div class="logo">
-            <span>✨</span>
-            <span>MYSTIC TABLETOP</span>
+    <!-- Header -->
+    <div class="header">
+        <div class="title">✨ THE FRACTURED SKY</div>
+        <div class="header-actions">
+            <button class="btn" onclick="saveGame()">💾 Save</button>
+            <button class="btn" onclick="loadGame()">📂 Load</button>
+            <button class="btn btn-primary" onclick="openDM()">🎭 DM Controls</button>
         </div>
-
-        <div class="nav-center">
-            <div class="tab-container" id="tabContainer">
-                <!-- Tabs will be inserted here -->
-            </div>
-            <button class="add-tab-btn" onclick="createNewSession()">+ New Session</button>
-        </div>
-
-        <div class="nav-actions">
-            <button class="icon-btn" onclick="saveSession()" title="Save Session">💾</button>
-            <button class="icon-btn" onclick="loadSession()" title="Load Session">📂</button>
-            <button class="dm-btn" onclick="openDMPanel()">🎭 DM Controls</button>
-        </div>
-    </nav>
+    </div>
 
     <!-- Main Container -->
-    <div class="main-container">
-        <!-- Player View -->
-        <div class="player-view">
-            <div class="tabletop-wrapper">
-                <div class="tabletop-controls">
-                    <div class="control-group">
-                        <span class="session-title" id="sessionName">The Fractured Sky</span>
-                    </div>
-                    <div class="control-group">
-                        <span class="control-label">Zoom:</span>
-                        <input type="range" class="slider" id="zoomSlider" min="50" max="300" value="100" oninput="updateZoom(this.value)">
-                        <span id="zoomValue">100%</span>
+    <div class="container">
+        <!-- Main Area -->
+        <div class="main-area">
+            <div class="tabletop">
+                <div class="tabletop-header">
+                    <div class="session-name" id="sessionName">The Fractured Sky</div>
+                    <div class="zoom-controls">
+                        <span style="color: var(--text-dim); font-size: 0.9rem;">Zoom:</span>
+                        <input type="range" class="slider" id="zoomSlider" min="25" max="200" value="100" oninput="setZoom(this.value)">
+                        <span id="zoomValue" style="min-width: 50px; font-size: 0.9rem;">100%</span>
                     </div>
                 </div>
-                <div class="canvas-area">
-                    <canvas id="tabletopCanvas" width="1600" height="900"></canvas>
+                <div class="canvas-container">
+                    <canvas id="mainCanvas" width="1600" height="900"></canvas>
                 </div>
             </div>
         </div>
@@ -1071,1131 +512,499 @@ a<!DOCTYPE html>
         <div class="dm-panel" id="dmPanel">
             <div class="dm-header">
                 <h2>🎭 Dungeon Master</h2>
-                <button class="close-btn" onclick="closeDMPanel()">×</button>
+                <button class="btn" onclick="closeDM()">✕</button>
             </div>
-
             <div class="dm-content">
                 <!-- Import Maps -->
                 <div class="section">
-                    <div class="section-header">📥 Import Maps</div>
-
-                    <div class="info-box">
-                        Import maps from professional tools or upload your own images
-                    </div>
-
-                    <div style="display: grid; gap: 0.75rem; margin: 1rem 0;">
-                        <a href="https://inkarnate.com/maps/" target="_blank" class="btn btn-primary" style="text-decoration: none; justify-content: center;">
-                            🗺️ Open Inkarnate
-                        </a>
-                        <a href="https://www.owlbear.rodeo/" target="_blank" class="btn btn-primary" style="text-decoration: none; justify-content: center;">
-                            🎲 Open Owlbear Rodeo
-                        </a>
-                    </div>
-
-                    <div class="info-box" style="font-size: 0.8rem; line-height: 1.5;">
-                        <strong>How to import:</strong><br>
-                        1. Create/export map from Inkarnate or Owlbear<br>
-                        2. Click "Upload Image" below<br>
-                        3. Select your downloaded map file<br>
-                        4. Click "Load to Table" to display
-                    </div>
-
-                    <input type="file" id="mapUpload" accept="image/*" style="display: none;" onchange="handleMapUpload(event)">
-                    
-                    <div class="btn-group" style="margin-top: 1rem;">
-                        <button class="btn btn-success" onclick="document.getElementById('mapUpload').click()" style="flex: 1;">
-                            📤 Upload Image
-                        </button>
-                        <button class="btn btn-primary" onclick="loadMapToTable()">
-                            📥 Load to Table
-                        </button>
+                    <h3>📥 Import Maps</h3>
+                    <a href="https://inkarnate.com/maps/" target="_blank" class="btn btn-primary" style="width: 100%; text-decoration: none; display: block; text-align: center; margin-bottom: 0.5rem;">
+                        🗺️ Open Inkarnate
+                    </a>
+                    <a href="https://www.owlbear.rodeo/" target="_blank" class="btn btn-primary" style="width: 100%; text-decoration: none; display: block; text-align: center; margin-bottom: 0.75rem;">
+                        🎲 Open Owlbear Rodeo
+                    </a>
+                    <input type="file" id="mapUpload" accept="image/*" style="display: none;" onchange="uploadMap(event)">
+                    <div class="btn-group">
+                        <button class="btn" onclick="document.getElementById('mapUpload').click()" style="flex: 1;">📤 Upload Map</button>
+                        <button class="btn btn-primary" onclick="loadMapToTable()">Load to Table</button>
                     </div>
                 </div>
 
                 <!-- Map Builder -->
                 <div class="section">
-                    <div class="section-header">🗺️ Map Builder</div>
-
+                    <h3>🗺️ Map Builder</h3>
                     <div class="tool-grid">
-                        <div class="tool-card active" onclick="setTool('brush')" id="brushTool">
-                            <div class="tool-icon">🖌️</div>
-                            <div>Brush</div>
-                        </div>
-                        <div class="tool-card" onclick="setTool('fill')" id="fillTool">
-                            <div class="tool-icon">🪣</div>
-                            <div>Fill</div>
-                        </div>
-                        <div class="tool-card" onclick="setTool('eraser')" id="eraserTool">
-                            <div class="tool-icon">🧹</div>
-                            <div>Erase</div>
-                        </div>
-                        <div class="tool-card" onclick="setTool('stamp')" id="stampTool">
-                            <div class="tool-icon">🏰</div>
-                            <div>Stamp</div>
-                        </div>
-                        <div class="tool-card" onclick="setTool('line')" id="lineTool">
-                            <div class="tool-icon">📏</div>
-                            <div>Line</div>
-                        </div>
-                        <div class="tool-card" onclick="setTool('rect')" id="rectTool">
-                            <div class="tool-icon">⬜</div>
-                            <div>Rect</div>
-                        </div>
-                        <div class="tool-card" onclick="setTool('circle')" id="circleTool">
-                            <div class="tool-icon">⭕</div>
-                            <div>Circle</div>
-                        </div>
-                        <div class="tool-card" onclick="setTool('text')" id="textTool">
-                            <div class="tool-icon">📝</div>
-                            <div>Text</div>
-                        </div>
+                        <div class="tool-btn active" onclick="setTool('brush')" id="brushBtn">🖌️<br>Brush</div>
+                        <div class="tool-btn" onclick="setTool('fill')" id="fillBtn">🪣<br>Fill</div>
+                        <div class="tool-btn" onclick="setTool('eraser')" id="eraserBtn">🧹<br>Erase</div>
+                        <div class="tool-btn" onclick="setTool('stamp')" id="stampBtn">🏰<br>Stamp</div>
                     </div>
-
                     <div class="control-row">
                         <label>Color:</label>
                         <input type="color" id="colorPicker" value="#4a7c59">
                     </div>
-
                     <div class="control-row">
                         <label>Size:</label>
-                        <input type="range" class="slider" id="brushSize" min="1" max="100" value="15" oninput="updateBrushSize(this.value)">
-                        <span id="brushSizeValue">15px</span>
+                        <input type="range" class="slider" id="sizeSlider" min="1" max="50" value="10" oninput="setSize(this.value)" style="flex: 1;">
+                        <span id="sizeValue">10px</span>
                     </div>
-
-                    <details style="margin: 1rem 0;">
-                        <summary style="cursor: pointer; color: var(--accent-gold); font-weight: 500; margin-bottom: 0.5rem;">Assets Library (70+)</summary>
-                        <div class="asset-picker">
-                            <div class="asset-btn" onclick="selectStamp('🌲')">🌲</div>
-                            <div class="asset-btn" onclick="selectStamp('🌳')">🌳</div>
-                            <div class="asset-btn" onclick="selectStamp('🌴')">🌴</div>
-                            <div class="asset-btn" onclick="selectStamp('🍃')">🍃</div>
-                            <div class="asset-btn" onclick="selectStamp('🌿')">🌿</div>
-                            <div class="asset-btn" onclick="selectStamp('🏔️')">🏔️</div>
-                            <div class="asset-btn" onclick="selectStamp('⛰️')">⛰️</div>
-                            <div class="asset-btn" onclick="selectStamp('🗻')">🗻</div>
-                            <div class="asset-btn" onclick="selectStamp('🌊')">🌊</div>
-                            <div class="asset-btn" onclick="selectStamp('💧')">💧</div>
-                            <div class="asset-btn" onclick="selectStamp('🏰')">🏰</div>
-                            <div class="asset-btn" onclick="selectStamp('🏯')">🏯</div>
-                            <div class="asset-btn" onclick="selectStamp('🏛️')">🏛️</div>
-                            <div class="asset-btn" onclick="selectStamp('⛪')">⛪</div>
-                            <div class="asset-btn" onclick="selectStamp('🏘️')">🏘️</div>
-                            <div class="asset-btn" onclick="selectStamp('🏚️')">🏚️</div>
-                            <div class="asset-btn" onclick="selectStamp('🏠')">🏠</div>
-                            <div class="asset-btn" onclick="selectStamp('⛺')">⛺</div>
-                            <div class="asset-btn" onclick="selectStamp('🛤️')">🛤️</div>
-                            <div class="asset-btn" onclick="selectStamp('🌉')">🌉</div>
-                            <div class="asset-btn" onclick="selectStamp('🔮')">🔮</div>
-                            <div class="asset-btn" onclick="selectStamp('⚗️')">⚗️</div>
-                            <div class="asset-btn" onclick="selectStamp('📜')">📜</div>
-                            <div class="asset-btn" onclick="selectStamp('⚔️')">⚔️</div>
-                            <div class="asset-btn" onclick="selectStamp('🗡️')">🗡️</div>
-                            <div class="asset-btn" onclick="selectStamp('🛡️')">🛡️</div>
-                            <div class="asset-btn" onclick="selectStamp('🏹')">🏹</div>
-                            <div class="asset-btn" onclick="selectStamp('🪓')">🪓</div>
-                            <div class="asset-btn" onclick="selectStamp('💎')">💎</div>
-                            <div class="asset-btn" onclick="selectStamp('👑')">👑</div>
-                            <div class="asset-btn" onclick="selectStamp('🔥')">🔥</div>
-                            <div class="asset-btn" onclick="selectStamp('❄️')">❄️</div>
-                            <div class="asset-btn" onclick="selectStamp('⚡')">⚡</div>
-                            <div class="asset-btn" onclick="selectStamp('💀')">💀</div>
-                            <div class="asset-btn" onclick="selectStamp('🕯️')">🕯️</div>
-                            <div class="asset-btn" onclick="selectStamp('🐉')">🐉</div>
-                            <div class="asset-btn" onclick="selectStamp('🦅')">🦅</div>
-                            <div class="asset-btn" onclick="selectStamp('🦉')">🦉</div>
-                            <div class="asset-btn" onclick="selectStamp('🦇')">🦇</div>
-                            <div class="asset-btn" onclick="selectStamp('🐺')">🐺</div>
-                            <div class="asset-btn" onclick="selectStamp('🦁')">🦁</div>
-                            <div class="asset-btn" onclick="selectStamp('🐻')">🐻</div>
-                            <div class="asset-btn" onclick="selectStamp('🦌')">🦌</div>
-                            <div class="asset-btn" onclick="selectStamp('🍄')">🍄</div>
-                            <div class="asset-btn" onclick="selectStamp('🪨')">🪨</div>
+                    <details>
+                        <summary style="cursor: pointer; color: var(--gold); margin: 0.5rem 0;">Assets (40+)</summary>
+                        <div class="asset-grid">
+                            <div class="asset-btn" onclick="setStamp('🌲')">🌲</div>
+                            <div class="asset-btn" onclick="setStamp('🌳')">🌳</div>
+                            <div class="asset-btn" onclick="setStamp('🏔️')">🏔️</div>
+                            <div class="asset-btn" onclick="setStamp('🌊')">🌊</div>
+                            <div class="asset-btn" onclick="setStamp('🏰')">🏰</div>
+                            <div class="asset-btn" onclick="setStamp('🏯')">🏯</div>
+                            <div class="asset-btn" onclick="setStamp('⛪')">⛪</div>
+                            <div class="asset-btn" onclick="setStamp('🏘️')">🏘️</div>
+                            <div class="asset-btn" onclick="setStamp('🛤️')">🛤️</div>
+                            <div class="asset-btn" onclick="setStamp('🌉')">🌉</div>
+                            <div class="asset-btn" onclick="setStamp('🔮')">🔮</div>
+                            <div class="asset-btn" onclick="setStamp('⚔️')">⚔️</div>
+                            <div class="asset-btn" onclick="setStamp('🛡️')">🛡️</div>
+                            <div class="asset-btn" onclick="setStamp('🏹')">🏹</div>
+                            <div class="asset-btn" onclick="setStamp('💎')">💎</div>
+                            <div class="asset-btn" onclick="setStamp('🔥')">🔥</div>
+                            <div class="asset-btn" onclick="setStamp('⚡')">⚡</div>
+                            <div class="asset-btn" onclick="setStamp('💀')">💀</div>
+                            <div class="asset-btn" onclick="setStamp('🐉')">🐉</div>
+                            <div class="asset-btn" onclick="setStamp('🦅')">🦅</div>
                         </div>
                     </details>
-
-                    <canvas id="mapCanvas" width="1600" height="900"></canvas>
-
-                    <div class="btn-group" style="margin-top: 1rem;">
-                        <button class="btn btn-primary" onclick="loadMapToTable()">📥 Load to Table</button>
-                        <button class="btn" onclick="exportMap()">💾 Export</button>
-                        <button class="btn btn-danger" onclick="clearMap()">🗑️ Clear</button>
+                    <canvas id="mapCanvas" width="800" height="450"></canvas>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="loadMapToTable()">Load to Table</button>
+                        <button class="btn" onclick="clearMap()">Clear</button>
                     </div>
                 </div>
 
                 <!-- Fog of War -->
                 <div class="section">
-                    <div class="section-header">🌫️ Fog of War</div>
-
-                    <div class="info-box">
-                        Enable fog mode to reveal/hide areas. Perfect for exploration!</div>
-
+                    <h3>🌫️ Fog of War</h3>
                     <div class="control-row">
-                        <label>Brush:</label>
-                        <input type="range" class="slider" id="fogBrushSize" min="20" max="200" value="60" oninput="updateFogBrush(this.value)">
-                        <span id="fogBrushValue">60px</span>
+                        <label>Brush Size:</label>
+                        <input type="range" class="slider" id="fogSize" min="20" max="150" value="60" oninput="setFogSize(this.value)" style="flex: 1;">
+                        <span id="fogSizeValue">60px</span>
                     </div>
-
-                    <label class="checkbox-row">
-                        <input type="checkbox" id="revealMode" checked onchange="updateFogMode()">
-                        <span>Reveal Mode (uncheck to hide)</span>
-                    </label>
-
-                    <div class="btn-group" style="margin-top: 1rem;">
-                        <button class="btn btn-primary" onclick="toggleFogMode()" id="fogModeBtn">Enable Fog</button>
-                        <button class="btn btn-danger" onclick="resetFog()">Reset Fog</button>
+                    <div class="control-row">
+                        <label>
+                            <input type="checkbox" id="revealMode" checked> Reveal (uncheck to hide)
+                        </label>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="toggleFog()" id="fogBtn">Enable Fog</button>
+                        <button class="btn" onclick="resetFog()">Reset</button>
                     </div>
                 </div>
 
                 <!-- Tokens -->
                 <div class="section">
-                    <div class="section-header">🎲 Tokens</div>
-
-                    <details style="margin: 0.5rem 0;">
-                        <summary style="cursor: pointer; color: var(--accent-gold); font-weight: 500; margin-bottom: 0.5rem;">Quick Add (16 Tokens)</summary>
-                        <div class="asset-picker" style="grid-template-columns: repeat(4, 1fr);">
-                            <div class="asset-btn" onclick="addTokenWithIcon('#e74c3c', '⚔️')" style="background: #e74c3c;">⚔️</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#3498db', '🛡️')" style="background: #3498db;">🛡️</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#2ecc71', '🏹')" style="background: #2ecc71;">🏹</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#9b59b6', '🔮')" style="background: #9b59b6;">🔮</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#f39c12', '🗡️')" style="background: #f39c12;">🗡️</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#1abc9c', '🪄')" style="background: #1abc9c;">🪄</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#e67e22', '🦁')" style="background: #e67e22;">🦁</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#34495e', '🎵')" style="background: #34495e;">🎵</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#8b4513', '👹')" style="background: #8b4513;">👹</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#2c3e50', '💀')" style="background: #2c3e50;">💀</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#c0392b', '👿')" style="background: #c0392b;">👿</div>
-                            <div class="asset-btn" onclick="addTokenWithIcon('#27ae60', '🐉')" style="background: #27ae60;">🐉</div>
+                    <h3>🎲 Tokens</h3>
+                    <details>
+                        <summary style="cursor: pointer; color: var(--gold); margin: 0.5rem 0;">Quick Add (12)</summary>
+                        <div class="asset-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="asset-btn" onclick="addToken('#e74c3c', '⚔️')" style="background: #e74c3c;">⚔️</div>
+                            <div class="asset-btn" onclick="addToken('#3498db', '🛡️')" style="background: #3498db;">🛡️</div>
+                            <div class="asset-btn" onclick="addToken('#2ecc71', '🏹')" style="background: #2ecc71;">🏹</div>
+                            <div class="asset-btn" onclick="addToken('#9b59b6', '🔮')" style="background: #9b59b6;">🔮</div>
+                            <div class="asset-btn" onclick="addToken('#f39c12', '🗡️')" style="background: #f39c12;">🗡️</div>
+                            <div class="asset-btn" onclick="addToken('#1abc9c', '🪄')" style="background: #1abc9c;">🪄</div>
+                            <div class="asset-btn" onclick="addToken('#8b4513', '👹')" style="background: #8b4513;">👹</div>
+                            <div class="asset-btn" onclick="addToken('#2c3e50', '💀')" style="background: #2c3e50;">💀</div>
+                            <div class="asset-btn" onclick="addToken('#c0392b', '👿')" style="background: #c0392b;">👿</div>
+                            <div class="asset-btn" onclick="addToken('#27ae60', '🐉')" style="background: #27ae60;">🐉</div>
                         </div>
                     </details>
-
-                    <div class="btn-group" style="margin-top: 1rem;">
+                    <div class="btn-group">
                         <button class="btn btn-primary" onclick="addCustomToken()">+ Custom</button>
-                        <button class="btn btn-danger" onclick="clearAllTokens()">Clear All</button>
+                        <button class="btn" onclick="clearTokens()">Clear All</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Login Modal -->
-    <div class="login-overlay" id="loginOverlay">
-        <div class="login-modal">
-            <div class="login-header">
-                <div class="login-icon">🧙</div>
+    <!-- DM Login Modal -->
+    <div class="modal" id="dmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">🧙</div>
                 <h2>Dungeon Master</h2>
-                <p>Enter credentials to access controls</p>
             </div>
-
-            <form onsubmit="handleLogin(event)">
+            <form onsubmit="dmLogin(event)">
                 <div class="form-group">
                     <label>USERNAME</label>
-                    <input type="text" id="dmUsername" placeholder="Enter username" autocomplete="off" required>
+                    <input type="text" id="dmUser" placeholder="Enter username" autocomplete="off" required>
                 </div>
-
                 <div class="form-group">
                     <label>PASSWORD</label>
-                    <input type="password" id="dmPassword" placeholder="Enter password" autocomplete="off" required>
+                    <input type="password" id="dmPass" placeholder="Enter password" autocomplete="off" required>
                 </div>
-
-                <div class="error-message" id="loginError">
-                    Invalid credentials. Please try again.
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">ENTER</button>
-                <button type="button" class="btn" onclick="closeLogin()" style="width: 100%; margin-top: 0.75rem; justify-content: center;">Cancel</button>
+                <div class="error" id="dmError">Invalid credentials</div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">ENTER</button>
+                <button type="button" class="btn" onclick="closeDMModal()" style="width: 100%; margin-top: 0.5rem;">Cancel</button>
             </form>
         </div>
     </div>
 
     <!-- Player Login Modal -->
-    <div class="login-overlay" id="playerLoginOverlay">
-        <div class="login-modal">
-            <div class="login-header">
-                <div class="login-icon">👤</div>
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">👤</div>
                 <h2>Player Login</h2>
-                <p>Join the adventure</p>
             </div>
-
-            <form onsubmit="handlePlayerLogin(event)">
+            <form onsubmit="playerLogin(event)">
                 <div class="form-group">
-                    <label>PLAYER NAME</label>
-                    <input type="text" id="playerName" placeholder="Enter your character name" autocomplete="off" required>
+                    <label>CHARACTER NAME</label>
+                    <input type="text" id="playerName" placeholder="Enter your name" autocomplete="off" required>
                 </div>
-
-                <div class="form-group">
-                    <label>PASSWORD (Optional)</label>
-                    <input type="password" id="playerPassword" placeholder="Leave empty for guest" autocomplete="off">
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">JOIN GAME</button>
-                <button type="button" class="btn" onclick="closePlayerLogin()" style="width: 100%; margin-top: 0.75rem; justify-content: center;">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">JOIN GAME</button>
+                <button type="button" class="btn" onclick="closePlayerModal()" style="width: 100%; margin-top: 0.5rem;">Cancel</button>
             </form>
         </div>
     </div>
 
-    <!-- Player Token Bar -->
-    <div class="player-token-bar" id="playerTokenBar">
+    <!-- Player Bar -->
+    <div class="player-bar" id="playerBar">
         <div class="player-info">
-            <div class="player-avatar" id="playerAvatar">👤</div>
-            <div class="player-name" id="displayPlayerName">Guest</div>
+            <div style="width: 36px; height: 36px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;" id="playerAvatar">👤</div>
+            <span id="playerNameDisplay">Guest</span>
         </div>
-
-        <div class="my-tokens" id="myTokens">
-            <!-- Player tokens will appear here -->
-        </div>
-
-        <div class="token-controls">
-            <button class="mini-btn" onclick="showImportToken()">📤 Import</button>
-            <button class="mini-btn" onclick="createPlayerToken()">➕ New</button>
-            <button class="mini-btn" onclick="playerLogout()">🚪 Logout</button>
+        <div class="player-tokens" id="playerTokens"></div>
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="file" id="tokenUpload" accept="image/*" style="display: none;" onchange="uploadToken(event)">
+            <button class="btn" onclick="document.getElementById('tokenUpload').click()">📤 Import</button>
+            <button class="btn" onclick="createPlayerToken()">+ New</button>
+            <button class="btn" onclick="playerLogout()">Logout</button>
         </div>
     </div>
 
     <!-- Player Login Button -->
-    <button class="player-login-btn" id="playerLoginBtn" onclick="showPlayerLogin()">
-        👤
-    </button>
+    <button class="player-login-btn" onclick="showPlayerLogin()" id="playerBtn">👤</button>
 
-    <!-- Hidden file inputs -->
-    <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileLoad(event)">
-    <input type="file" id="tokenImport" accept="image/*" style="display: none;" onchange="handleTokenImport(event)">
+    <!-- Hidden File Input -->
+    <input type="file" id="fileLoad" accept=".json" style="display: none;" onchange="handleLoad(event)">
 
     <script>
-        // Login System
-        const DM_CREDENTIALS = {
-            username: 'Wizard',
-            password: 'Wizard'
-        };
-        
-        let isLoggedIn = false;
-
-        function showLogin() {
-            document.getElementById('loginOverlay').classList.add('active');
-            document.getElementById('dmUsername').focus();
-        }
-
-        function closeLogin() {
-            document.getElementById('loginOverlay').classList.remove('active');
-            document.getElementById('loginError').classList.remove('show');
-            document.getElementById('dmUsername').value = '';
-            document.getElementById('dmPassword').value = '';
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('dmUsername').value;
-            const password = document.getElementById('dmPassword').value;
-            const errorMsg = document.getElementById('loginError');
-
-            if (username === DM_CREDENTIALS.username && password === DM_CREDENTIALS.password) {
-                isLoggedIn = true;
-                closeLogin();
-                openDMPanel();
-                document.getElementById('dmPassword').value = '';
-            } else {
-                errorMsg.classList.add('show');
-                setTimeout(() => errorMsg.classList.remove('show'), 3000);
-                document.getElementById('dmPassword').value = '';
-                document.getElementById('dmPassword').focus();
-            }
-        }
-
-        function openDMPanel() {
-            if (!isLoggedIn) {
-                showLogin();
-                return;
-            }
-            document.getElementById('dmPanel').classList.add('open');
-        }
-
-        function closeDMPanel() {
-            document.getElementById('dmPanel').classList.remove('open');
-        }
-
-        // Player Login System
+        // State
+        let isDM = false;
         let currentPlayer = null;
-        let playerTokens = [];
-        let selectedPlayerToken = null;
-
-        function showPlayerLogin() {
-            document.getElementById('playerLoginOverlay').classList.add('active');
-            document.getElementById('playerName').focus();
-        }
-
-        function closePlayerLogin() {
-            document.getElementById('playerLoginOverlay').classList.remove('active');
-            document.getElementById('playerName').value = '';
-            document.getElementById('playerPassword').value = '';
-        }
-
-        function handlePlayerLogin(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('playerName').value.trim();
-            const password = document.getElementById('playerPassword').value;
-
-            if (!name) return;
-
-            currentPlayer = {
-                name: name,
-                password: password,
-                avatar: getRandomEmoji(),
-                tokens: []
-            };
-
-            document.getElementById('displayPlayerName').textContent = name;
-            document.getElementById('playerAvatar').textContent = currentPlayer.avatar;
-            document.getElementById('playerTokenBar').classList.add('show');
-            document.getElementById('playerLoginBtn').classList.add('logged-in');
-            document.getElementById('playerLoginBtn').textContent = '✓';
-            document.querySelector('.main-container').classList.add('with-player-bar');
-
-            closePlayerLogin();
-            renderPlayerTokens();
-        }
-
-        function playerLogout() {
-            if (!confirm('Logout from the game?')) return;
-            
-            currentPlayer = null;
-            playerTokens = [];
-            selectedPlayerToken = null;
-            document.getElementById('playerTokenBar').classList.remove('show');
-            document.getElementById('playerLoginBtn').classList.remove('logged-in');
-            document.getElementById('playerLoginBtn').textContent = '👤';
-            document.getElementById('myTokens').innerHTML = '';
-            document.querySelector('.main-container').classList.remove('with-player-bar');
-        }
-
-        function getRandomEmoji() {
-            const emojis = ['⚔️', '🛡️', '🏹', '🔮', '🗡️', '🪄', '🦁', '🎵', '🧙', '🧝', '🧚', '🧞'];
-            return emojis[Math.floor(Math.random() * emojis.length)];
-        }
-
-        function createPlayerToken() {
-            if (!currentPlayer) {
-                showPlayerLogin();
-                return;
-            }
-
-            const icon = prompt('Enter token emoji/icon:', '⚔️') || '⚔️';
-            const color = prompt('Enter hex color (e.g., #ff0000):', '#e74c3c') || '#e74c3c';
-
-            const token = {
-                id: Date.now() + Math.random(),
-                icon: icon,
-                color: color,
-                owner: currentPlayer.name
-            };
-
-            playerTokens.push(token);
-            renderPlayerTokens();
-        }
-
-        function renderPlayerTokens() {
-            const container = document.getElementById('myTokens');
-            container.innerHTML = playerTokens.map(token => `
-                <div class="player-token ${selectedPlayerToken === token.id ? 'selected' : ''}" 
-                     style="background: ${token.color};"
-                     onclick="selectPlayerToken(${token.id})"
-                     draggable="true"
-                     ondragstart="handleTokenDragStart(event, ${token.id})">
-                    ${token.icon}
-                </div>
-            `).join('');
-        }
-
-        function selectPlayerToken(tokenId) {
-            selectedPlayerToken = selectedPlayerToken === tokenId ? null : tokenId;
-            renderPlayerTokens();
-        }
-
-        function handleTokenDragStart(event, tokenId) {
-            const token = playerTokens.find(t => t.id === tokenId);
-            if (!token) return;
-
-            event.dataTransfer.effectAllowed = 'copy';
-            event.dataTransfer.setData('text/plain', JSON.stringify({
-                type: 'player-token',
-                token: token
-            }));
-        }
-
-        function showImportToken() {
-            if (!currentPlayer) {
-                showPlayerLogin();
-                return;
-            }
-            document.getElementById('tokenImport').click();
-        }
-
-        function handleTokenImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                alert('Please upload an image file');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const icon = prompt('Enter emoji to represent this token:', '🎭') || '🎭';
-                const color = prompt('Enter background color (hex):', '#3498db') || '#3498db';
-
-                const token = {
-                    id: Date.now() + Math.random(),
-                    icon: icon,
-                    color: color,
-                    image: e.target.result,
-                    owner: currentPlayer.name
-                };
-
-                playerTokens.push(token);
-                renderPlayerTokens();
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
-        }
-
-        // Session Management
-        let sessions = [];
-        let currentSessionId = null;
-
-        function createSession(name = 'Untitled Session') {
-            const session = {
-                id: Date.now() + Math.random(),
-                name: name,
-                created: new Date().toISOString(),
-                map: null,
-                tokens: [],
-                fog: null,
-                zoom: 1,
-                panX: 0,
-                panY: 0
-            };
-            sessions.push(session);
-            return session;
-        }
-
-        function createNewSession() {
-            const name = prompt('Enter session name:', 'Campaign ' + (sessions.length + 1));
-            if (!name) return;
-            
-            const session = createSession(name);
-            currentSessionId = session.id;
-            renderTabs();
-            switchToSession(session.id);
-        }
-
-        function switchToSession(sessionId) {
-            currentSessionId = sessionId;
-            const session = sessions.find(s => s.id === sessionId);
-            if (!session) return;
-
-            // Load session state
-            document.getElementById('sessionName').textContent = session.name;
-            tokens = session.tokens || [];
-            zoom = session.zoom || 1;
-            panX = session.panX !== undefined ? session.panX : 0;
-            panY = session.panY !== undefined ? session.panY : 0;
-            
-            // If no saved pan position, center it
-            if (session.panX === undefined || session.panY === undefined) {
-                const canvasWrapper = document.querySelector('.canvas-area');
-                if (canvasWrapper) {
-                    panX = (canvasWrapper.offsetWidth - tableCanvas.width * zoom) / 2;
-                    panY = (canvasWrapper.offsetHeight - tableCanvas.height * zoom) / 2;
-                }
-            }
-            
-            // Load map
-            if (session.map) {
-                const img = new Image();
-                img.onload = function() {
-                    backgroundImage = img;
-                    drawTable();
-                };
-                img.src = session.map;
-            } else {
-                backgroundImage = null;
-                drawTable();
-            }
-
-            // Load fog
-            if (session.fog) {
-                const img = new Image();
-                img.onload = function() {
-                    fogCtx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
-                    fogCtx.drawImage(img, 0, 0);
-                    drawTable();
-                };
-                img.src = session.fog;
-            } else {
-                resetFog();
-            }
-
-            document.getElementById('zoomSlider').value = zoom * 100;
-            document.getElementById('zoomValue').textContent = Math.round(zoom * 100) + '%';
-            
-            renderTabs();
-            drawTable();
-        }
-
-        function saveCurrentSession() {
-            if (!currentSessionId) return;
-            
-            const session = sessions.find(s => s.id === currentSessionId);
-            if (!session) return;
-
-            session.tokens = JSON.parse(JSON.stringify(tokens));
-            session.zoom = zoom;
-            session.panX = panX;
-            session.panY = panY;
-            
-            if (backgroundImage) {
-                session.map = tableCanvas.toDataURL();
-            }
-            
-            session.fog = fogCanvas.toDataURL();
-        }
-
-        function deleteSession(sessionId) {
-            if (!confirm('Delete this session?')) return;
-            
-            sessions = sessions.filter(s => s.id !== sessionId);
-            
-            if (currentSessionId === sessionId) {
-                currentSessionId = sessions.length > 0 ? sessions[0].id : null;
-                if (currentSessionId) {
-                    switchToSession(currentSessionId);
-                }
-            }
-            
-            renderTabs();
-        }
-
-        function renderTabs() {
-            const container = document.getElementById('tabContainer');
-            container.innerHTML = sessions.map(session => `
-                <div class="tab ${session.id === currentSessionId ? 'active' : ''}" onclick="switchToSession(${session.id})">
-                    <span>${session.name}</span>
-                    <button class="tab-close" onclick="event.stopPropagation(); deleteSession(${session.id})">×</button>
-                </div>
-            `).join('');
-        }
-
-        // Save/Load System
-        function saveSession() {
-            saveCurrentSession();
-            
-            const saveData = {
-                version: '1.0',
-                sessions: sessions.map(s => ({
-                    ...s,
-                    tokens: s.tokens || []
-                })),
-                currentSessionId: currentSessionId
-            };
-
-            const dataStr = JSON.stringify(saveData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'mystic-tabletop-' + Date.now() + '.json';
-            link.click();
-            URL.revokeObjectURL(url);
-
-            alert('✅ Session saved successfully!');
-        }
-
-        function loadSession() {
-            document.getElementById('fileInput').click();
-        }
-
-        function handleFileLoad(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (!data.sessions || !Array.isArray(data.sessions)) {
-                        throw new Error('Invalid save file format');
-                    }
-
-                    sessions = data.sessions;
-                    currentSessionId = data.currentSessionId || (sessions.length > 0 ? sessions[0].id : null);
-                    
-                    if (currentSessionId) {
-                        switchToSession(currentSessionId);
-                    }
-                    
-                    renderTabs();
-                    alert('✅ Sessions loaded successfully!');
-                } catch (err) {
-                    alert('❌ Error loading file: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        // Drawing Tools
-        let currentTool = 'brush';
-        let brushSize = 15;
-        let currentColor = '#4a7c59';
-        let selectedStamp = '🌲';
-        let fogMode = false;
-        let fogBrushSize = 60;
-        let revealMode = true;
         let zoom = 1;
         let panX = 0;
         let panY = 0;
         let tokens = [];
-        let backgroundImage = null;
+        let tool = 'brush';
+        let color = '#4a7c59';
+        let size = 10;
+        let stamp = '🌲';
+        let fogSize = 60;
+        let fogMode = false;
         let isDrawing = false;
-        let draggedToken = null;
         let lastX = 0;
         let lastY = 0;
-        let startX = 0;
-        let startY = 0;
+        let dragToken = null;
+        let mapImage = null;
+        let playerTokens = [];
 
+        // Canvas
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
         const mapCanvas = document.getElementById('mapCanvas');
         const mapCtx = mapCanvas.getContext('2d');
-        const tableCanvas = document.getElementById('tabletopCanvas');
-        const tableCtx = tableCanvas.getContext('2d');
-
         const fogCanvas = document.createElement('canvas');
         const fogCtx = fogCanvas.getContext('2d');
-        fogCanvas.width = tableCanvas.width;
-        fogCanvas.height = tableCanvas.height;
+        fogCanvas.width = canvas.width;
+        fogCanvas.height = canvas.height;
 
+        // Initialize
         function init() {
             mapCtx.fillStyle = '#f5f5dc';
             mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-
-            fogCtx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
             fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
+            
+            // Center view
+            const container = canvas.parentElement;
+            panX = (container.offsetWidth - canvas.width) / 2;
+            panY = (container.offsetHeight - canvas.height) / 2;
+            
+            draw();
+        }
 
-            // Center the canvas view
-            const canvasWrapper = document.querySelector('.canvas-area');
-            if (canvasWrapper) {
-                panX = (canvasWrapper.offsetWidth - tableCanvas.width) / 2;
-                panY = (canvasWrapper.offsetHeight - tableCanvas.height) / 2;
+        // Draw
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(panX, panY);
+            ctx.scale(zoom, zoom);
+
+            // Background
+            if (mapImage) {
+                ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height);
+            } else {
+                ctx.fillStyle = '#1a1f2e';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Grid
+                ctx.strokeStyle = '#2a2f3e';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < canvas.width; x += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < canvas.height; y += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
             }
 
-            // Create default session
-            const defaultSession = createSession('The Fractured Sky');
-            currentSessionId = defaultSession.id;
-            renderTabs();
-            
-            drawTable();
+            // Tokens
+            tokens.forEach(t => {
+                ctx.fillStyle = t.color;
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, 30, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = t.owner ? '#8b5cf6' : '#fbbf24';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.fillStyle = '#fff';
+                ctx.font = '32px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(t.icon, t.x, t.y);
+                if (t.owner && currentPlayer && t.owner === currentPlayer) {
+                    ctx.fillStyle = '#8b5cf6';
+                    ctx.font = '12px Inter';
+                    ctx.fillText(t.owner, t.x, t.y + 45);
+                }
+            });
+
+            ctx.restore();
+
+            // Fog
+            ctx.save();
+            ctx.translate(panX, panY);
+            ctx.scale(zoom, zoom);
+            ctx.drawImage(fogCanvas, 0, 0);
+            ctx.restore();
         }
 
-        function setTool(tool) {
-            currentTool = tool;
-            document.querySelectorAll('.tool-card').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(tool + 'Tool').classList.add('active');
+        // DM Functions
+        function openDM() {
+            document.getElementById('dmModal').classList.add('active');
         }
 
-        function updateBrushSize(value) {
-            brushSize = value;
-            document.getElementById('brushSizeValue').textContent = value + 'px';
+        function closeDMModal() {
+            document.getElementById('dmModal').classList.remove('active');
+            document.getElementById('dmError').classList.remove('show');
         }
 
-        function selectStamp(emoji) {
-            selectedStamp = emoji;
+        function dmLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('dmUser').value;
+            const pass = document.getElementById('dmPass').value;
+            if (user === 'Wizard' && pass === 'Wizard') {
+                isDM = true;
+                closeDMModal();
+                document.getElementById('dmPanel').classList.add('open');
+            } else {
+                document.getElementById('dmError').classList.add('show');
+            }
+        }
+
+        function closeDM() {
+            document.getElementById('dmPanel').classList.remove('open');
+        }
+
+        // Map Tools
+        function setTool(t) {
+            tool = t;
+            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(t + 'Btn').classList.add('active');
+        }
+
+        function setSize(v) {
+            size = v;
+            document.getElementById('sizeValue').textContent = v + 'px';
+        }
+
+        function setStamp(s) {
+            stamp = s;
             setTool('stamp');
-            document.querySelectorAll('.asset-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
         }
 
-        document.getElementById('colorPicker').addEventListener('change', (e) => {
-            currentColor = e.target.value;
+        document.getElementById('colorPicker').addEventListener('change', e => {
+            color = e.target.value;
         });
 
-        // Map Canvas Events
-        mapCanvas.addEventListener('mousedown', (e) => {
+        // Map Canvas Drawing
+        mapCanvas.addEventListener('mousedown', e => {
             isDrawing = true;
             const rect = mapCanvas.getBoundingClientRect();
             const scaleX = mapCanvas.width / rect.width;
             const scaleY = mapCanvas.height / rect.height;
-            startX = (e.clientX - rect.left) * scaleX;
-            startY = (e.clientY - rect.top) * scaleY;
-            lastX = startX;
-            lastY = startY;
-
-            if (currentTool === 'brush') {
-                mapCtx.beginPath();
-                mapCtx.moveTo(startX, startY);
-                mapCtx.strokeStyle = currentColor;
-                mapCtx.lineWidth = brushSize;
-                mapCtx.lineCap = 'round';
-                mapCtx.lineJoin = 'round';
-            } else if (currentTool === 'eraser') {
-                mapCtx.beginPath();
-                mapCtx.moveTo(startX, startY);
-            } else if (currentTool === 'fill') {
-                mapCtx.fillStyle = currentColor;
-                mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-            } else if (currentTool === 'stamp') {
-                mapCtx.font = '64px Arial';
-                mapCtx.fillText(selectedStamp, startX - 32, startY + 16);
-            } else if (currentTool === 'text') {
-                const text = prompt('Enter text:');
-                if (text) {
-                    mapCtx.fillStyle = currentColor;
-                    mapCtx.font = '32px Raleway';
-                    mapCtx.fillText(text, startX, startY);
-                }
-            }
-        });
-
-        mapCanvas.addEventListener('mousemove', (e) => {
-            if (!isDrawing) return;
-
-            const rect = mapCanvas.getBoundingClientRect();
-            const scaleX = mapCanvas.width / rect.width;
-            const scaleY = mapCanvas.height / rect.height;
             const x = (e.clientX - rect.left) * scaleX;
             const y = (e.clientY - rect.top) * scaleY;
-
-            if (currentTool === 'brush') {
-                mapCtx.lineTo(x, y);
-                mapCtx.stroke();
-            } else if (currentTool === 'eraser') {
-                mapCtx.globalCompositeOperation = 'destination-out';
-                mapCtx.lineWidth = brushSize;
-                mapCtx.lineCap = 'round';
-                mapCtx.lineTo(x, y);
-                mapCtx.stroke();
-                mapCtx.globalCompositeOperation = 'source-over';
-            }
-
             lastX = x;
             lastY = y;
+
+            if (tool === 'brush') {
+                mapCtx.beginPath();
+                mapCtx.moveTo(x, y);
+                mapCtx.strokeStyle = color;
+                mapCtx.lineWidth = size;
+                mapCtx.lineCap = 'round';
+            } else if (tool === 'fill') {
+                mapCtx.fillStyle = color;
+                mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+            } else if (tool === 'stamp') {
+                mapCtx.font = '48px Arial';
+                mapCtx.fillText(stamp, x - 24, y + 12);
+            } else if (tool === 'eraser') {
+                mapCtx.globalCompositeOperation = 'destination-out';
+                mapCtx.beginPath();
+                mapCtx.moveTo(x, y);
+                mapCtx.lineWidth = size;
+            }
         });
 
-        mapCanvas.addEventListener('mouseup', (e) => {
+        mapCanvas.addEventListener('mousemove', e => {
             if (!isDrawing) return;
-
             const rect = mapCanvas.getBoundingClientRect();
             const scaleX = mapCanvas.width / rect.width;
             const scaleY = mapCanvas.height / rect.height;
             const x = (e.clientX - rect.left) * scaleX;
             const y = (e.clientY - rect.top) * scaleY;
 
-            if (currentTool === 'line') {
-                mapCtx.strokeStyle = currentColor;
-                mapCtx.lineWidth = brushSize;
-                mapCtx.lineCap = 'round';
-                mapCtx.beginPath();
-                mapCtx.moveTo(startX, startY);
+            if (tool === 'brush') {
                 mapCtx.lineTo(x, y);
                 mapCtx.stroke();
-            } else if (currentTool === 'rect') {
-                mapCtx.fillStyle = currentColor;
-                mapCtx.fillRect(startX, startY, x - startX, y - startY);
-            } else if (currentTool === 'circle') {
-                const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
-                mapCtx.fillStyle = currentColor;
-                mapCtx.beginPath();
-                mapCtx.arc(startX, startY, radius, 0, Math.PI * 2);
-                mapCtx.fill();
+            } else if (tool === 'eraser') {
+                mapCtx.lineTo(x, y);
+                mapCtx.stroke();
             }
-
-            isDrawing = false;
         });
 
-        mapCanvas.addEventListener('mouseleave', () => {
+        mapCanvas.addEventListener('mouseup', () => {
             isDrawing = false;
+            if (tool === 'eraser') {
+                mapCtx.globalCompositeOperation = 'source-over';
+            }
         });
 
         function clearMap() {
-            if (confirm('Clear the entire map?')) {
+            if (confirm('Clear map?')) {
                 mapCtx.fillStyle = '#f5f5dc';
                 mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
             }
         }
 
-        function exportMap() {
-            const link = document.createElement('a');
-            link.download = 'map-' + Date.now() + '.png';
-            link.href = mapCanvas.toDataURL();
-            link.click();
+        function uploadMap(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = new Image();
+                img.onload = () => {
+                    mapCtx.fillStyle = '#f5f5dc';
+                    mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+                    mapCtx.drawImage(img, 0, 0, mapCanvas.width, mapCanvas.height);
+                    alert('Map uploaded! Click "Load to Table"');
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function loadMapToTable() {
             const img = new Image();
-            img.onload = function() {
-                backgroundImage = img;
-                drawTable();
-                saveCurrentSession();
+            img.onload = () => {
+                mapImage = img;
+                draw();
             };
             img.src = mapCanvas.toDataURL();
         }
 
-        function handleMapUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                alert('Please upload an image file (PNG, JPG, etc.)');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Load to map canvas first
-                const img = new Image();
-                img.onload = function() {
-                    // Clear and resize map canvas to fit image
-                    mapCtx.fillStyle = '#f5f5dc';
-                    mapCtx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-                    
-                    // Draw uploaded image centered and scaled
-                    const scale = Math.min(
-                        mapCanvas.width / img.width,
-                        mapCanvas.height / img.height
-                    );
-                    const x = (mapCanvas.width - img.width * scale) / 2;
-                    const y = (mapCanvas.height - img.height * scale) / 2;
-                    
-                    mapCtx.drawImage(img, x, y, img.width * scale, img.height * scale);
-                    
-                    alert('✅ Map uploaded! Click "Load to Table" to display it.');
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
+        // Fog
+        function setFogSize(v) {
+            fogSize = v;
+            document.getElementById('fogSizeValue').textContent = v + 'px';
         }
 
-        // Virtual Tabletop
-        function drawTable() {
-            tableCtx.save();
-            tableCtx.clearRect(0, 0, tableCanvas.width, tableCanvas.height);
-
-            tableCtx.translate(panX, panY);
-            tableCtx.scale(zoom, zoom);
-
-            if (backgroundImage) {
-                tableCtx.drawImage(backgroundImage, 0, 0, tableCanvas.width / zoom, tableCanvas.height / zoom);
-            } else {
-                tableCtx.fillStyle = '#161b22';
-                tableCtx.fillRect(0, 0, tableCanvas.width / zoom, tableCanvas.height / zoom);
-                tableCtx.strokeStyle = '#1f2937';
-                tableCtx.lineWidth = 2 / zoom;
-                const gridSize = 50;
-                for (let x = 0; x <= tableCanvas.width / zoom; x += gridSize) {
-                    tableCtx.beginPath();
-                    tableCtx.moveTo(x, 0);
-                    tableCtx.lineTo(x, tableCanvas.height / zoom);
-                    tableCtx.stroke();
-                }
-                for (let y = 0; y <= tableCanvas.height / zoom; y += gridSize) {
-                    tableCtx.beginPath();
-                    tableCtx.moveTo(0, y);
-                    tableCtx.lineTo(tableCanvas.width / zoom, y);
-                    tableCtx.stroke();
-                }
-            }
-
-            tokens.forEach(token => {
-                // Draw token background
-                tableCtx.fillStyle = token.color;
-                tableCtx.beginPath();
-                tableCtx.arc(token.x, token.y, 30, 0, Math.PI * 2);
-                tableCtx.fill();
-                
-                // Draw border (gold for DM tokens, purple for player tokens)
-                tableCtx.strokeStyle = token.owner ? var(--accent-primary) : '#fbbf24';
-                tableCtx.lineWidth = 3 / zoom;
-                tableCtx.stroke();
-
-                // Draw image or icon
-                if (token.image) {
-                    // If token has custom image
-                    const img = new Image();
-                    img.src = token.image;
-                    tableCtx.save();
-                    tableCtx.beginPath();
-                    tableCtx.arc(token.x, token.y, 28, 0, Math.PI * 2);
-                    tableCtx.clip();
-                    tableCtx.drawImage(img, token.x - 28, token.y - 28, 56, 56);
-                    tableCtx.restore();
-                } else {
-                    // Draw emoji icon
-                    tableCtx.fillStyle = '#fff';
-                    tableCtx.font = `${32 / zoom}px Arial`;
-                    tableCtx.textAlign = 'center';
-                    tableCtx.textBaseline = 'middle';
-                    tableCtx.fillText(token.icon, token.x, token.y);
-                }
-
-                // Draw owner name if player token
-                if (token.owner && currentPlayer && token.owner === currentPlayer.name) {
-                    tableCtx.fillStyle = 'rgba(139, 92, 246, 0.8)';
-                    tableCtx.font = `${12 / zoom}px Raleway`;
-                    tableCtx.textAlign = 'center';
-                    tableCtx.fillText(token.owner, token.x, token.y + 45);
-                }
-            });
-
-            tableCtx.restore();
-
-            tableCtx.save();
-            tableCtx.translate(panX, panY);
-            tableCtx.scale(zoom, zoom);
-            tableCtx.drawImage(fogCanvas, 0, 0);
-            tableCtx.restore();
-        }
-
-        function updateZoom(value) {
-            zoom = value / 100;
-            document.getElementById('zoomValue').textContent = Math.round(value) + '%';
-            drawTable();
-            saveCurrentSession();
-        }
-
-        // Fog of War
-        function updateFogBrush(value) {
-            fogBrushSize = parseInt(value);
-            document.getElementById('fogBrushValue').textContent = value + 'px';
-        }
-
-        function toggleFogMode() {
+        function toggleFog() {
             fogMode = !fogMode;
-            const btn = document.getElementById('fogModeBtn');
+            const btn = document.getElementById('fogBtn');
             if (fogMode) {
-                btn.textContent = '🌫️ Fog Active';
-                btn.classList.add('btn-success');
-                tableCanvas.style.cursor = 'crosshair';
+                btn.textContent = 'Fog Active';
+                btn.classList.add('btn-primary');
+                canvas.style.cursor = 'crosshair';
             } else {
                 btn.textContent = 'Enable Fog';
-                btn.classList.remove('btn-success');
-                tableCanvas.style.cursor = 'grab';
+                btn.classList.remove('btn-primary');
+                canvas.style.cursor = 'grab';
             }
-        }
-
-        function updateFogMode() {
-            revealMode = document.getElementById('revealMode').checked;
         }
 
         function resetFog() {
-            fogCtx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
-            fogCtx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
             fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
-            drawTable();
-            saveCurrentSession();
+            draw();
         }
 
-        function applyFog(x, y) {
-            if (revealMode) {
-                fogCtx.globalCompositeOperation = 'destination-out';
-                fogCtx.beginPath();
-                fogCtx.arc(x, y, fogBrushSize, 0, Math.PI * 2);
-                fogCtx.fill();
-            } else {
-                fogCtx.globalCompositeOperation = 'source-over';
-                fogCtx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-                fogCtx.beginPath();
-                fogCtx.arc(x, y, fogBrushSize, 0, Math.PI * 2);
-                fogCtx.fill();
-            }
-        }
-
-        // Token Management
-        function addTokenWithIcon(color, icon) {
-            tokens.push({
-                x: (tableCanvas.width / 2 - panX) / zoom,
-                y: (tableCanvas.height / 2 - panY) / zoom,
-                color: color,
-                icon: icon
-            });
-            drawTable();
-            saveCurrentSession();
+        // Tokens
+        function addToken(c, i) {
+            tokens.push({ x: canvas.width / 2, y: canvas.height / 2, color: c, icon: i, owner: null });
+            draw();
         }
 
         function addCustomToken() {
-            const icon = prompt('Enter token emoji/icon:') || '⚔️';
-            const color = prompt('Enter hex color (e.g., #ff0000):') || '#' + Math.floor(Math.random()*16777215).toString(16);
-            addTokenWithIcon(color, icon);
+            const i = prompt('Emoji:', '⚔️') || '⚔️';
+            const c = prompt('Color:', '#e74c3c') || '#e74c3c';
+            addToken(c, i);
         }
 
-        function clearAllTokens() {
-            if (confirm('Remove all tokens?')) {
+        function clearTokens() {
+            if (confirm('Clear all tokens?')) {
                 tokens = [];
-                drawTable();
-                saveCurrentSession();
+                draw();
             }
         }
 
-        // Table Canvas Events
-        tableCanvas.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy';
-        });
+        // Zoom/Pan
+        function setZoom(v) {
+            zoom = v / 100;
+            document.getElementById('zoomValue').textContent = Math.round(v) + '%';
+            draw();
+        }
 
-        tableCanvas.addEventListener('drop', (e) => {
-            e.preventDefault();
-            
-            try {
-                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-                if (data.type === 'player-token') {
-                    const rect = tableCanvas.getBoundingClientRect();
-                    const x = (e.clientX - rect.left - panX) / zoom;
-                    const y = (e.clientY - rect.top - panY) / zoom;
-
-                    tokens.push({
-                        x: x,
-                        y: y,
-                        color: data.token.color,
-                        icon: data.token.icon,
-                        owner: data.token.owner,
-                        image: data.token.image || null
-                    });
-
-                    drawTable();
-                    saveCurrentSession();
-                }
-            } catch (err) {
-                // Not a player token drop
-            }
-        });
-
-        tableCanvas.addEventListener('mousedown', (e) => {
-            const rect = tableCanvas.getBoundingClientRect();
-            const mouseX = (e.clientX - rect.left - panX) / zoom;
-            const mouseY = (e.clientY - rect.top - panY) / zoom;
+        // Canvas Interaction
+        canvas.addEventListener('mousedown', e => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = (e.clientX - rect.left - panX) / zoom;
+            const my = (e.clientY - rect.top - panY) / zoom;
 
             if (fogMode) {
                 isDrawing = true;
-                applyFog(mouseX, mouseY);
-                drawTable();
+                applyFog(mx, my);
                 return;
             }
 
-            draggedToken = tokens.find(token => {
-                const dx = mouseX - token.x;
-                const dy = mouseY - token.y;
-                const isNearToken = Math.sqrt(dx * dx + dy * dy) < 30;
-                
-                // Players can only move their own tokens
-                if (currentPlayer && token.owner) {
-                    return isNearToken && token.owner === currentPlayer.name;
-                }
-                
-                // DM can move any token without owner, or if logged in as DM
-                return isNearToken && (!token.owner || isLoggedIn);
+            dragToken = tokens.find(t => {
+                const dx = mx - t.x;
+                const dy = my - t.y;
+                const near = Math.sqrt(dx*dx + dy*dy) < 30;
+                if (currentPlayer && t.owner) return near && t.owner === currentPlayer;
+                return near && (!t.owner || isDM);
             });
 
-            if (draggedToken) {
+            if (dragToken) {
                 isDrawing = true;
             } else {
                 lastX = e.clientX;
@@ -2204,49 +1013,176 @@ a<!DOCTYPE html>
             }
         });
 
-        tableCanvas.addEventListener('mousemove', (e) => {
+        canvas.addEventListener('mousemove', e => {
             if (!isDrawing) return;
-
-            const rect = tableCanvas.getBoundingClientRect();
-            const mouseX = (e.clientX - rect.left - panX) / zoom;
-            const mouseY = (e.clientY - rect.top - panY) / zoom;
+            const rect = canvas.getBoundingClientRect();
+            const mx = (e.clientX - rect.left - panX) / zoom;
+            const my = (e.clientY - rect.top - panY) / zoom;
 
             if (fogMode) {
-                applyFog(mouseX, mouseY);
-                drawTable();
+                applyFog(mx, my);
                 return;
             }
 
-            if (draggedToken) {
-                draggedToken.x = mouseX;
-                draggedToken.y = mouseY;
+            if (dragToken) {
+                dragToken.x = mx;
+                dragToken.y = my;
+                draw();
             } else {
                 panX += e.clientX - lastX;
                 panY += e.clientY - lastY;
                 lastX = e.clientX;
                 lastY = e.clientY;
+                draw();
             }
-
-            drawTable();
         });
 
-        tableCanvas.addEventListener('mouseup', () => {
-            if (isDrawing && (draggedToken || fogMode)) {
-                saveCurrentSession();
-            }
+        canvas.addEventListener('mouseup', () => {
             isDrawing = false;
-            draggedToken = null;
+            dragToken = null;
         });
 
-        tableCanvas.addEventListener('mouseleave', () => {
-            if (isDrawing && (draggedToken || fogMode)) {
-                saveCurrentSession();
+        function applyFog(x, y) {
+            const reveal = document.getElementById('revealMode').checked;
+            if (reveal) {
+                fogCtx.globalCompositeOperation = 'destination-out';
+            } else {
+                fogCtx.globalCompositeOperation = 'source-over';
+                fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
             }
-            isDrawing = false;
-            draggedToken = null;
+            fogCtx.beginPath();
+            fogCtx.arc(x, y, fogSize, 0, Math.PI * 2);
+            fogCtx.fill();
+            draw();
+        }
+
+        // Player
+        function showPlayerLogin() {
+            document.getElementById('playerModal').classList.add('active');
+        }
+
+        function closePlayerModal() {
+            document.getElementById('playerModal').classList.remove('active');
+        }
+
+        function playerLogin(e) {
+            e.preventDefault();
+            currentPlayer = document.getElementById('playerName').value;
+            document.getElementById('playerNameDisplay').textContent = currentPlayer;
+            document.getElementById('playerBar').classList.add('show');
+            document.getElementById('playerBtn').textContent = '✓';
+            closePlayerModal();
+        }
+
+        function playerLogout() {
+            currentPlayer = null;
+            playerTokens = [];
+            document.getElementById('playerBar').classList.remove('show');
+            document.getElementById('playerBtn').textContent = '👤';
+        }
+
+        function createPlayerToken() {
+            if (!currentPlayer) { showPlayerLogin(); return; }
+            const i = prompt('Emoji:', '⚔️') || '⚔️';
+            const c = prompt('Color:', '#e74c3c') || '#e74c3c';
+            const t = { id: Date.now(), color: c, icon: i };
+            playerTokens.push(t);
+            renderPlayerTokens();
+        }
+
+        function renderPlayerTokens() {
+            document.getElementById('playerTokens').innerHTML = playerTokens.map(t => `
+                <div class="token" draggable="true" style="background: ${t.color};" 
+                     ondragstart="dragPlayerToken(event, ${t.id})">${t.icon}</div>
+            `).join('');
+        }
+
+        function dragPlayerToken(e, id) {
+            const t = playerTokens.find(x => x.id === id);
+            e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'player', token: t }));
+        }
+
+        canvas.addEventListener('dragover', e => e.preventDefault());
+        canvas.addEventListener('drop', e => {
+            e.preventDefault();
+            try {
+                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                if (data.type === 'player') {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = (e.clientX - rect.left - panX) / zoom;
+                    const y = (e.clientY - rect.top - panY) / zoom;
+                    tokens.push({ x, y, color: data.token.color, icon: data.token.icon, owner: currentPlayer });
+                    draw();
+                }
+            } catch {}
         });
 
-        // Initialize
+        function uploadToken(e) {
+            if (!currentPlayer) { showPlayerLogin(); return; }
+            // For now, just use emoji
+            createPlayerToken();
+        }
+
+        // Save/Load
+        function saveGame() {
+            const data = {
+                tokens,
+                map: mapImage ? mapImage.src : null,
+                fog: fogCanvas.toDataURL(),
+                zoom,
+                panX,
+                panY
+            };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fractured-sky-' + Date.now() + '.json';
+            a.click();
+        }
+
+        function loadGame() {
+            document.getElementById('fileLoad').click();
+        }
+
+        function handleLoad(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const data = JSON.parse(ev.target.result);
+                tokens = data.tokens || [];
+                zoom = data.zoom || 1;
+                panX = data.panX || 0;
+                panY = data.panY || 0;
+                document.getElementById('zoomSlider').value = zoom * 100;
+                document.getElementById('zoomValue').textContent = Math.round(zoom * 100) + '%';
+                
+                if (data.map) {
+                    const img = new Image();
+                    img.onload = () => {
+                        mapImage = img;
+                        draw();
+                    };
+                    img.src = data.map;
+                }
+                
+                if (data.fog) {
+                    const img = new Image();
+                    img.onload = () => {
+                        fogCtx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
+                        fogCtx.drawImage(img, 0, 0);
+                        draw();
+                    };
+                    img.src = data.fog;
+                }
+                
+                draw();
+            };
+            reader.readAsText(file);
+        }
+
+        // Init
         init();
     </script>
 </body>
