@@ -1113,13 +1113,15 @@
             ctx.translate(panX, panY);
             ctx.scale(zoom, zoom);
 
-            // Draw 3x3 grid centered at origin
+            // Draw 3x3 grid - the viewport always shows a 3x3 grid
+            // The center cell (1,1) is at the current builder position (currentGridX, currentGridY)
             for (let row = 0; row < 3; row++) {
                 for (let col = 0; col < 3; col++) {
                     const x = col * GRID_SIZE;
                     const y = row * GRID_SIZE;
                     
-                    // Calculate which grid cell this represents based on current position
+                    // Calculate the absolute grid position for this cell
+                    // Center of viewport (col=1, row=1) corresponds to (currentGridX, currentGridY)
                     const absoluteX = currentGridX + (col - 1);
                     const absoluteY = currentGridY + (row - 1);
                     const key = `${absoluteX},${absoluteY}`;
@@ -1138,20 +1140,20 @@
                     ctx.lineWidth = 2;
                     ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
                     
-                    // Highlight center cell (where DM is building)
+                    // Highlight center cell (where DM is currently building)
                     if (col === 1 && row === 1 && isDM) {
                         ctx.strokeStyle = '#8b5cf6';
                         ctx.lineWidth = 4;
                         ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
                         
-                        // Cell label
+                        // Cell label showing current build position
                         ctx.fillStyle = 'rgba(139, 92, 246, 0.3)';
-                        ctx.fillRect(x + 5, y + 5, 120, 30);
+                        ctx.fillRect(x + 5, y + 5, 150, 30);
                         ctx.fillStyle = '#8b5cf6';
                         ctx.font = 'bold 14px Inter';
                         ctx.textAlign = 'left';
                         ctx.textBaseline = 'top';
-                        ctx.fillText('Building Here', x + 10, y + 12);
+                        ctx.fillText(`Building: (${currentGridX}, ${currentGridY})`, x + 10, y + 12);
                     }
                 }
             }
