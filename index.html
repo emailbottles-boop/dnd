@@ -852,18 +852,18 @@
                     
                     <div class="grid-selector active">
                         <div class="grid-info">
-                            Cell: <span class="current" id="currentCell">Center (5)</span>
+                            Cell: <span class="current" id="currentCell">Center</span>
                         </div>
                         <div class="grid-nav">
-                            <button class="btn btn-small" onclick="moveGrid(-1, -1)">↖</button>
-                            <button class="btn btn-small" onclick="moveGrid(0, -1)">↑</button>
-                            <button class="btn btn-small" onclick="moveGrid(1, -1)">↗</button>
-                            <button class="btn btn-small" onclick="moveGrid(-1, 0)">←</button>
+                            <button class="btn btn-small" onclick="selectCell(0, 0)">↖</button>
+                            <button class="btn btn-small" onclick="selectCell(1, 0)">↑</button>
+                            <button class="btn btn-small" onclick="selectCell(2, 0)">↗</button>
+                            <button class="btn btn-small" onclick="selectCell(0, 1)">←</button>
                             <button class="btn btn-small" style="background: var(--accent); color: white; cursor: default;" disabled>●</button>
-                            <button class="btn btn-small" onclick="moveGrid(1, 0)">→</button>
-                            <button class="btn btn-small" onclick="moveGrid(-1, 1)">↙</button>
-                            <button class="btn btn-small" onclick="moveGrid(0, 1)">↓</button>
-                            <button class="btn btn-small" onclick="moveGrid(1, 1)">↘</button>
+                            <button class="btn btn-small" onclick="selectCell(2, 1)">→</button>
+                            <button class="btn btn-small" onclick="selectCell(0, 2)">↙</button>
+                            <button class="btn btn-small" onclick="selectCell(1, 2)">↓</button>
+                            <button class="btn btn-small" onclick="selectCell(2, 2)">↘</button>
                         </div>
                     </div>
 
@@ -1059,17 +1059,18 @@
         let playerRequests = [];
         let approvedPlayers = [];
         
-        // 3x3 Grid system - FIXED: Now properly tracks grid position
+        // 3x3 Grid system - Direct mapping (0,0 = top-left, 2,2 = bottom-right)
         const GRID_SIZE = 400;
         const CELL_SIZE = 400;
-        let currentGridX = 0;  // This represents which 3x3 grid we're viewing
-        let currentGridY = 0;
+        let currentCellX = 1;  // Start at center cell (1,1)
+        let currentCellY = 1;
         let gridCells = {};
+        let lockedCells = {}; // Track which cells are submitted/locked
 
         const gridNames = [
-            ['NW (1)', 'N (2)', 'NE (3)'],
-            ['W (4)', 'Center (5)', 'E (6)'],
-            ['SW (7)', 'S (8)', 'SE (9)']
+            ['Top-Left', 'Top-Center', 'Top-Right'],
+            ['Middle-Left', 'Center', 'Middle-Right'],
+            ['Bottom-Left', 'Bottom-Center', 'Bottom-Right']
         ];
 
         // Canvas
@@ -1104,6 +1105,7 @@
             fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
             setMode('map');
             updateGridDisplay();
+            updateMapBuilderState();
             updateSaveButton();  // Initialize save button state
         }
 
@@ -1113,18 +1115,13 @@
             ctx.translate(panX, panY);
             ctx.scale(zoom, zoom);
 
-            // Draw 3x3 grid - the viewport always shows a 3x3 grid
-            // The center cell (1,1) is at the current builder position (currentGridX, currentGridY)
+            // Draw 3x3 grid - direct 1:1 mapping
+            // (0,0) = top-left, (1,0) = top-center, (2,0) = top-right, etc.
             for (let row = 0; row < 3; row++) {
                 for (let col = 0; col < 3; col++) {
                     const x = col * GRID_SIZE;
                     const y = row * GRID_SIZE;
-                    
-                    // Calculate the absolute grid position for this cell
-                    // Center of viewport (col=1, row=1) corresponds to (currentGridX, currentGridY)
-                    const absoluteX = currentGridX + (col - 1);
-                    const absoluteY = currentGridY + (row - 1);
-                    const key = `${absoluteX},${absoluteY}`;
+                    const key = `${col},${row}`;
                     
                     // Cell background
                     ctx.fillStyle = '#1a1f2e';
@@ -1140,20 +1137,29 @@
                     ctx.lineWidth = 2;
                     ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
                     
-                    // Highlight center cell (where DM is currently building)
-                    if (col === 1 && row === 1 && isDM) {
-                        ctx.strokeStyle = '#8b5cf6';
+                    // Highlight currently selected cell for building
+                    if (col === currentCellX && row === currentCellY && isDM) {
+                        ctx.strokeStyle = lockedCells[key] ? '#fbbf24' : '#8b5cf6';
                         ctx.lineWidth = 4;
                         ctx.strokeRect(x, y, GRID_SIZE, GRID_SIZE);
                         
-                        // Cell label showing current build position
-                        ctx.fillStyle = 'rgba(139, 92, 246, 0.3)';
-                        ctx.fillRect(x + 5, y + 5, 150, 30);
-                        ctx.fillStyle = '#8b5cf6';
+                        // Cell label showing current selection
+                        ctx.fillStyle = lockedCells[key] ? 'rgba(251, 191, 36, 0.3)' : 'rgba(139, 92, 246, 0.3)';
+                        ctx.fillRect(x + 5, y + 5, 160, 30);
+                        ctx.fillStyle = lockedCells[key] ? '#fbbf24' : '#8b5cf6';
                         ctx.font = 'bold 14px Inter';
                         ctx.textAlign = 'left';
                         ctx.textBaseline = 'top';
-                        ctx.fillText(`Building: (${currentGridX}, ${currentGridY})`, x + 10, y + 12);
+                        const status = lockedCells[key] ? '🔒 Locked' : '✏️ Building';
+                        ctx.fillText(`${status}: ${gridNames[row][col]}`, x + 10, y + 12);
+                    }
+                    
+                    // Show lock icon on locked cells
+                    if (lockedCells[key] && !(col === currentCellX && row === currentCellY)) {
+                        ctx.fillStyle = 'rgba(251, 191, 36, 0.2)';
+                        ctx.fillRect(x + GRID_SIZE - 40, y + 5, 35, 30);
+                        ctx.font = '20px Arial';
+                        ctx.fillText('🔒', x + GRID_SIZE - 35, y + 25);
                     }
                 }
             }
@@ -1189,14 +1195,16 @@
             ctx.restore();
         }
 
-        // FIXED: Grid navigation now properly updates position
-        function moveGrid(dx, dy) {
-            // Update the grid position
-            currentGridX += dx;
-            currentGridY += dy;
+        // FIXED: Direct cell selection - arrows map 1:1 to visible grid cells
+        function selectCell(cellX, cellY) {
+            // Bounds check (0-2 for both x and y)
+            if (cellX < 0 || cellX > 2 || cellY < 0 || cellY > 2) return;
             
-            // Load the cell at the new center position
-            const key = `${currentGridX},${currentGridY}`;
+            currentCellX = cellX;
+            currentCellY = cellY;
+            
+            // Load the cell content into the map builder
+            const key = `${cellX},${cellY}`;
             if (gridCells[key]) {
                 mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
                 mapCtx.drawImage(gridCells[key], 0, 0);
@@ -1207,24 +1215,73 @@
             }
             
             updateGridDisplay();
+            updateMapBuilderState();
             draw();
         }
 
+        function updateMapBuilderState() {
+            const key = `${currentCellX},${currentCellY}`;
+            const isLocked = lockedCells[key];
+            
+            // Disable/enable map building tools based on lock status
+            const tools = ['brushBtn', 'fillBtn', 'eraserBtn', 'stampBtn'];
+            const colorPicker = document.getElementById('colorPicker');
+            const sizeSlider = document.getElementById('sizeSlider');
+            const submitBtn = document.querySelector('#mapSection .btn-primary');
+            const clearBtn = document.querySelector('#mapSection .btn-group .btn:last-child');
+            
+            tools.forEach(toolId => {
+                const btn = document.getElementById(toolId);
+                if (btn) {
+                    btn.style.opacity = isLocked ? '0.5' : '1';
+                    btn.style.pointerEvents = isLocked ? 'none' : 'auto';
+                }
+            });
+            
+            if (colorPicker) {
+                colorPicker.disabled = isLocked;
+                colorPicker.style.opacity = isLocked ? '0.5' : '1';
+            }
+            if (sizeSlider) {
+                sizeSlider.disabled = isLocked;
+                sizeSlider.style.opacity = isLocked ? '0.5' : '1';
+            }
+            if (submitBtn) {
+                submitBtn.textContent = isLocked ? '🔒 Locked' : '✓ Submit';
+                submitBtn.disabled = isLocked;
+                submitBtn.style.opacity = isLocked ? '0.5' : '1';
+            }
+            if (clearBtn) {
+                clearBtn.disabled = isLocked;
+                clearBtn.style.opacity = isLocked ? '0.5' : '1';
+            }
+            
+            // Disable map canvas interaction if locked
+            mapCanvas.style.pointerEvents = isLocked ? 'none' : 'auto';
+            mapCanvas.style.opacity = isLocked ? '0.7' : '1';
+        }
+
         function updateGridDisplay() {
-            // Display current absolute grid position
-            document.getElementById('currentCell').textContent = `(${currentGridX}, ${currentGridY})`;
+            document.getElementById('currentCell').textContent = gridNames[currentCellY][currentCellX];
         }
 
         function submitCell() {
-            const key = `${currentGridX},${currentGridY}`;
+            const key = `${currentCellX},${currentCellY}`;
+            
+            // Create a permanent copy of the canvas
             const cellCanvas = document.createElement('canvas');
             cellCanvas.width = CELL_SIZE;
             cellCanvas.height = CELL_SIZE;
             const cellCtx = cellCanvas.getContext('2d');
             cellCtx.drawImage(mapCanvas, 0, 0);
             gridCells[key] = cellCanvas;
+            
+            // Lock this cell
+            lockedCells[key] = true;
+            
+            updateMapBuilderState();
             draw();
-            alert(`Cell (${currentGridX}, ${currentGridY}) submitted to grid!`);
+            alert(`${gridNames[currentCellY][currentCellX]} submitted and locked! Select another cell to continue building.`);
         }
 
         function clearCell() {
@@ -1708,7 +1765,17 @@
                 return;
             }
             
-            const data = { tokens, gridCells: {}, fog: fogCanvas.toDataURL(), zoom, panX, panY, currentGridX, currentGridY };
+            const data = { 
+                tokens, 
+                gridCells: {}, 
+                lockedCells: lockedCells,
+                fog: fogCanvas.toDataURL(), 
+                zoom, 
+                panX, 
+                panY, 
+                currentCellX, 
+                currentCellY 
+            };
             for (let key in gridCells) {
                 data.gridCells[key] = gridCells[key].toDataURL();
             }
@@ -1734,8 +1801,9 @@
                 zoom = data.zoom || 1;
                 panX = data.panX || 0;
                 panY = data.panY || 0;
-                currentGridX = data.currentGridX || 0;
-                currentGridY = data.currentGridY || 0;
+                currentCellX = data.currentCellX || 1;
+                currentCellY = data.currentCellY || 1;
+                lockedCells = data.lockedCells || {};
                 
                 gridCells = {};
                 for (let key in data.gridCells) {
@@ -1763,7 +1831,7 @@
                 }
                 
                 // Load the current cell into the map canvas
-                const key = `${currentGridX},${currentGridY}`;
+                const key = `${currentCellX},${currentCellY}`;
                 if (gridCells[key]) {
                     mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
                     mapCtx.drawImage(gridCells[key], 0, 0);
@@ -1775,6 +1843,7 @@
                 document.getElementById('zoomSlider').value = zoom * 100;
                 document.getElementById('zoomValue').textContent = Math.round(zoom * 100) + '%';
                 updateGridDisplay();
+                updateMapBuilderState();
                 draw();
             };
             reader.readAsText(file);
