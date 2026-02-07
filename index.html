@@ -892,6 +892,8 @@
                         <button class="btn btn-primary" onclick="submitCell()" style="flex: 1;">✓ Submit</button>
                         <button class="btn" onclick="clearCell()">Clear</button>
                     </div>
+                    
+                    <button class="btn" onclick="toggleLockCell()" id="lockBtn" style="width: 100%; margin-top: 0.5rem;">🔓 Lock Cell</button>
                 </div>
 
                 <!-- Textures & Patterns -->
@@ -1150,11 +1152,11 @@
                         ctx.font = 'bold 14px Inter';
                         ctx.textAlign = 'left';
                         ctx.textBaseline = 'top';
-                        const status = lockedCells[key] ? '🔒 Locked' : '✏️ Building';
+                        const status = lockedCells[key] ? '🔒 Locked' : '✏️ Editing';
                         ctx.fillText(`${status}: ${gridNames[row][col]}`, x + 10, y + 12);
                     }
                     
-                    // Show lock icon on locked cells
+                    // Show lock icon on locked cells (that aren't currently selected)
                     if (lockedCells[key] && !(col === currentCellX && row === currentCellY)) {
                         ctx.fillStyle = 'rgba(251, 191, 36, 0.2)';
                         ctx.fillRect(x + GRID_SIZE - 40, y + 5, 35, 30);
@@ -1222,6 +1224,7 @@
         function updateMapBuilderState() {
             const key = `${currentCellX},${currentCellY}`;
             const isLocked = lockedCells[key];
+            const hasContent = gridCells[key] !== undefined;
             
             // Disable/enable map building tools based on lock status
             const tools = ['brushBtn', 'fillBtn', 'eraserBtn', 'stampBtn'];
@@ -1229,6 +1232,7 @@
             const sizeSlider = document.getElementById('sizeSlider');
             const submitBtn = document.querySelector('#mapSection .btn-primary');
             const clearBtn = document.querySelector('#mapSection .btn-group .btn:last-child');
+            const lockBtn = document.getElementById('lockBtn');
             
             tools.forEach(toolId => {
                 const btn = document.getElementById(toolId);
@@ -1247,13 +1251,34 @@
                 sizeSlider.style.opacity = isLocked ? '0.5' : '1';
             }
             if (submitBtn) {
-                submitBtn.textContent = isLocked ? '🔒 Locked' : '✓ Submit';
                 submitBtn.disabled = isLocked;
                 submitBtn.style.opacity = isLocked ? '0.5' : '1';
             }
             if (clearBtn) {
                 clearBtn.disabled = isLocked;
                 clearBtn.style.opacity = isLocked ? '0.5' : '1';
+            }
+            
+            // Update lock button
+            if (lockBtn) {
+                if (!hasContent) {
+                    lockBtn.textContent = '🔓 Lock Cell';
+                    lockBtn.disabled = true;
+                    lockBtn.style.opacity = '0.5';
+                    lockBtn.title = 'Submit the cell first before locking';
+                } else if (isLocked) {
+                    lockBtn.textContent = '🔓 Unlock Cell';
+                    lockBtn.disabled = false;
+                    lockBtn.style.opacity = '1';
+                    lockBtn.classList.remove('btn-primary');
+                    lockBtn.title = 'Click to unlock and enable editing';
+                } else {
+                    lockBtn.textContent = '🔒 Lock Cell';
+                    lockBtn.disabled = false;
+                    lockBtn.style.opacity = '1';
+                    lockBtn.classList.remove('btn-primary');
+                    lockBtn.title = 'Click to lock and prevent further editing';
+                }
             }
             
             // Disable map canvas interaction if locked
@@ -1276,12 +1301,29 @@
             cellCtx.drawImage(mapCanvas, 0, 0);
             gridCells[key] = cellCanvas;
             
-            // Lock this cell
-            lockedCells[key] = true;
+            // Don't auto-lock - let user manually lock if desired
+            
+            draw();
+            alert(`${gridNames[currentCellY][currentCellX]} submitted! You can still edit it by selecting this cell again.`);
+        }
+        
+        function toggleLockCell() {
+            const key = `${currentCellX},${currentCellY}`;
+            
+            // Only allow locking if there's content in the cell
+            if (!gridCells[key]) {
+                alert('Submit the cell first before locking it!');
+                return;
+            }
+            
+            // Toggle lock state
+            lockedCells[key] = !lockedCells[key];
             
             updateMapBuilderState();
             draw();
-            alert(`${gridNames[currentCellY][currentCellX]} submitted and locked! Select another cell to continue building.`);
+            
+            const status = lockedCells[key] ? 'locked 🔒' : 'unlocked ✏️';
+            alert(`${gridNames[currentCellY][currentCellX]} is now ${status}`);
         }
 
         function clearCell() {
@@ -1499,15 +1541,27 @@
 
         function applyFog(x, y) {
             const reveal = document.getElementById('revealMode').checked;
+            
+            // Save current state
+            fogCtx.save();
+            
             if (reveal) {
+                // Reveal mode - erase the fog
                 fogCtx.globalCompositeOperation = 'destination-out';
+                fogCtx.fillStyle = 'rgba(0,0,0,1)'; // Fully opaque for erasing
             } else {
+                // Add fog mode
                 fogCtx.globalCompositeOperation = 'source-over';
                 fogCtx.fillStyle = 'rgba(0,0,0,0.9)';
             }
+            
             fogCtx.beginPath();
             fogCtx.arc(x, y, fogSize, 0, Math.PI * 2);
             fogCtx.fill();
+            
+            // Restore state to reset composite operation
+            fogCtx.restore();
+            
             draw();
         }
 
